@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Holzwurm – Dummy Shop</title>
+<style>
+  :root{--bg:#fffaf2;--fg:#1f2937;--muted:#6b7280}
+  *{box-sizing:border-box} body{margin:0;background:linear-gradient(#fff5e6,#f8fafc);
+  font-family:system-ui,Segoe UI,Inter,Arial,sans-serif;color:var(--fg)}
+  header{position:sticky;top:0;background:#fff8;backdrop-filter:blur(6px);border-bottom:1px solid #e5e7eb}
+  .container{max-width:1100px;margin:0 auto;padding:12px 16px}
+  h1{margin:6px 0 2px} .row{display:flex;gap:8px;align-items:center}
+  input,textarea{padding:10px;border:1px solid #d1d5db;border-radius:12px;font-size:14px}
+  button{border:1px solid #111827;background:#111827;color:#fff;border-radius:14px;
+  font-weight:600;padding:10px 14px;cursor:pointer}
+  button.ghost{background:transparent;color:#111827;border-color:transparent}
+  button.outline{background:#fff;border-color:#d1d5db;color:#111827}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+  .card{background:#fff;border:1px solid #e5e7eb;border-radius:18px;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.04)}
+  .card img{width:100%;height:160px;object-fit:cover}
+  .pad{padding:14px} .muted{color:var(--muted)}
+  .badge{border:1px solid #e5e7eb;background:#f3f4f6;padding:2px 8px;border-radius:999px;font-size:10px;letter-spacing:.06em;margin-left:6px}
+  .cart{position:fixed;right:16px;top:70px;width:360px;max-width:calc(100% - 32px);background:#fff;border:1px solid #e5e7eb;border-radius:18px;padding:14px;box-shadow:0 10px 30px rgba(0,0,0,.12);display:none}
+  .cart.open{display:block} .small{font-size:12px}
+  footer{border-top:1px solid #e5e7eb;margin-top:36px;padding:16px 0;font-size:12px;color:var(--muted)}
+</style>
+</head>
+<body>
+<header>
+  <div class="container row">
+    <strong>🌲 Holzwurm</strong><span class="badge">Demo</span>
+    <input id="search" placeholder="Suche: Artikel, SKU, Tags…" style="margin-left:auto;width:280px"/>
+    <button id="cartBtn">🛒 Warenkorb <span id="cartCount">(0)</span></button>
+  </div>
+</header>
+
+<main class="container">
+  <section>
+    <h1>Online-Shop (Dummy)</h1>
+    <p class="muted">Produkte wählen, in den Warenkorb legen und eine <b>unverbindliche Angebotsanfrage</b> senden. Der Versand erfolgt hier als JSON-Payload.</p>
+  </section>
+
+  <section id="products" class="grid"></section>
+
+  <aside id="cart" class="cart">
+    <div class="row" style="justify-content:space-between">
+      <h3 style="margin:0">Warenkorb</h3>
+      <button class="ghost" id="closeCart">✖</button>
+    </div>
+    <div id="cartItems"></div>
+    <div class="row" style="justify-content:space-between;margin-top:8px">
+      <span class="muted">Zwischensumme</span><b id="subtotal">€0,00</b>
+    </div>
+    <div class="row" style="gap:8px;margin-top:8px">
+      <button class="outline" id="clear">Leeren</button>
+      <a id="download" class="outline" download="holzwurm-warenkorb.json">
+        <button class="outline">JSON exportieren</button></a>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <div class="pad">
+        <h4 style="margin:4px 0 8px">Angebot anfragen</h4>
+        <div class="row" style="gap:8px">
+          <input id="c_company" placeholder="Firma (optional)" style="flex:1"/>
+          <input id="c_name" placeholder="Ihr Name *" style="flex:1"/>
+        </div>
+        <input id="c_email" placeholder="E-Mail *" type="email" style="width:100%;margin-top:8px"/>
+        <textarea id="c_notes" placeholder="Hinweise (z. B. Zuschnittmaße, Kante, Termin)" style="width:100%;margin-top:8px"></textarea>
+        <button id="send" style="width:100%;margin-top:8px">✅ Unverbindlich anfragen</button>
+        <div id="hint" class="small muted" style="margin-top:6px;display:none">✅ Demo: Anfrage in der Browser-Konsole ausgegeben.</div>
+        <details class="small" style="margin-top:6px;color:#374151">
+          <summary>JSON ansehen (für API)</summary>
+          <pre id="payload" style="max-height:180px;overflow:auto;background:#f3f4f6;padding:10px;border-radius:12px"></pre>
+        </details>
+      </div>
+    </div>
+  </aside>
+
+  <footer class="container">
+    © <span id="year"></span> Holzwurm GmbH · Demoprojekt ohne Backend. Angebotsanfrage erzeugt JSON.
+  </footer>
+</main>
+
+<script>
+const PRODUCTS=[
+  {id:"panel-18",name:"Spanplatte 18 mm",sku:"SP-18-STD",price:22.9,unit:"m²",image:"https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=1200&auto=format&fit=crop",tags:["Zuschnitt","Plattenware"],description:"Klassische Spanplatte, formaldehydarm. Ideal für Korpusmöbel. Fixzuschnitt möglich."},
+  {id:"panel-25",name:"Multiplex Birke 21 mm",sku:"MPX-B21",price:64.5,unit:"m²",image:"https://images.unsplash.com/photo-1545239351-1141bd82e8a6?q=80&w=1200&auto=format&fit=crop",tags:["Premium","Plattenware"],description:"Stabile Multiplex-Platte mit feiner Oberfläche. Für Sichtteile & Möbelbau."},
+  {id:"edge-2",name:"Kantenanleimen (pro lfm)",sku:"EDGE-2",price:1.8,unit:"lfm",image:"https://images.unsplash.com/photo-1523419409543-8c9801d53c53?q=80&w=1200&auto=format&fit=crop",tags:["Service","Kante"],description:"ABS-Kante 2 mm, farblich passend zur Platte. Radius & Fase nach Wunsch."},
+  {id:"cnc-setup",name:"CNC-Bohr/Fräsung (Rüst + min)",sku:"CNC-SETUP",price:55,unit:"Auftrag",image:"https://images.unsplash.com/photo-1604335399105-a0d7b6c5d7d0?q=80&w=1200&auto=format&fit=crop",tags:["Service","CNC"],description:"Rüstung inkl. Programmierung (Dummy). Minutenpreis nach Aufwand."}
+];
+const fmt = n=> new Intl.NumberFormat("de-AT",{style:"currency",currency:"EUR"}).format(n);
+const state = { cart: [], query: "" };
+const el = s => document.querySelector(s);
+
+function renderProducts(){
+  const q = state.query.toLowerCase();
+  el("#products").innerHTML = PRODUCTS
+    .filter(p => (p.name+p.sku+(p.tags||[]).join(" ")).toLowerCase().includes(q))
+    .map(p => `
+      <div class="card">
+        <img src="${p.image}" alt="${p.name}"/>
+        <div class="pad">
+          <div class="row" style="justify-content:space-between;align-items:flex-start">
+            <div><b>${p.name}</b>${(p.tags||[]).map(t=>`<span class="badge">${t}</span>`).join("")}</div>
+            <div class="small muted" title="Artikelnummer">${p.sku}</div>
+          </div>
+          <p class="small muted" style="margin:6px 0 8px">${p.description}</p>
+          <div class="row" style="justify-content:space-between">
+            <div class="small"><span class="muted">Preis</span> <b>${fmt(p.price)}</b> / ${p.unit}</div>
+            <button onclick="add('${p.id}')">🛒 In den Warenkorb</button>
+          </div>
+        </div>
+      </div>`).join("");
+}
+
+function add(id){
+  const p = PRODUCTS.find(x=>x.id===id);
+  const f = state.cart.find(c=>c.id===id);
+  if(f) f.qty+=1; else state.cart.push({...p, qty:1});
+  renderCart();
+}
+function changeQty(id,qty){ const it = state.cart.find(c=>c.id===id); if(it){ it.qty = Math.max(1, qty||1); renderCart(); } }
+function removeItem(id){ state.cart = state.cart.filter(c=>c.id!==id); renderCart(); }
+function clearCart(){ state.cart = []; renderCart(); }
+
+function renderCart(){
+  el("#cartCount").textContent = "(" + state.cart.length + ")";
+  el("#cartItems").innerHTML = state.cart.map(it=>`
+    <div class="row" style="gap:8px;margin:10px 0">
+      <img src="${it.image}" style="width:72px;height:56px;object-fit:cover;border-radius:10px">
+      <div style="flex:1">
+        <div><b>${it.name}</b></div>
+        <div class="small muted">${it.sku}</div>
+        <div class="small">${fmt(it.price)} / ${it.unit}</div>
+        <div class="row" style="gap:6px;margin-top:6px">
+          <input type="number" min="1" value="${it.qty}" style="width:70px" onchange="changeQty('${it.id}', this.value)">
+          <button class="ghost" onclick="removeItem('${it.id}')">🗑️ Entfernen</button>
+        </div>
+      </div>
+    </div>`).join("") || '<div class="muted small" style="padding:8px 0">Noch keine Artikel.</div>';
+  const sum = state.cart.reduce((a,it)=>a+it.qty*it.price,0);
+  el("#subtotal").textContent = fmt(sum);
+  el("#download").setAttribute("href","data:application/json;charset=utf-8,"+encodeURIComponent(JSON.stringify(state.cart,null,2)));
+  const payload = {
+    company: el("#c_company").value,
+    contact: el("#c_name").value,
+    email: el("#c_email").value,
+    notes: el("#c_notes").value,
+    items: state.cart.map(({id,sku,name,qty,price,unit})=>({id,sku,name,qty,price,unit})),
+    total: sum, createdAt: new Date().toISOString(), source: "holzwurm-dummy-shop-html"
+  };
+  el("#payload").textContent = JSON.stringify(payload,null,2);
+}
+
+document.addEventListener("DOMContentLoaded",()=>{
+  el("#year").textContent = new Date().getFullYear();
+  el("#cartBtn").onclick = ()=> el("#cart").classList.add("open");
+  el("#closeCart").onclick = ()=> el("#cart").classList.remove("open");
+  el("#clear").onclick = clearCart;
+  el("#send").onclick = ()=>{
+    const name = el("#c_name").value.trim(), email = el("#c_email").value.trim();
+    if(!name || !email){ alert("Bitte Name und E-Mail angeben."); return; }
+    console.log("DEMO: Angebotsanfrage", JSON.parse(el("#payload").textContent));
+    el("#hint").style.display = "block";
+  };
+  el("#search").oninput = (e)=>{ state.query = e.target.value; renderProducts(); };
+  renderProducts(); renderCart();
+});
+</script>
+</body>
+</html>
