@@ -5,24 +5,27 @@
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Holzwurm – Dummy Shop</title>
 <style>
-  :root{--bg:#fffaf2;--fg:#1f2937;--muted:#6b7280}
-  *{box-sizing:border-box} body{margin:0;background:linear-gradient(#fff5e6,#f8fafc);
-  font-family:system-ui,Segoe UI,Inter,Arial,sans-serif;color:var(--fg)}
-  header{position:sticky;top:0;background:#fff8;backdrop-filter:blur(6px);border-bottom:1px solid #e5e7eb}
+  :root{
+    --brand:#0b3d2e;      /* Tannengrün */
+    --brand-weak:#e6f2ee; /* helles Grün */
+    --bg:#fffaf2; --fg:#1f2937; --muted:#6b7280;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:linear-gradient(#fff5e6,#f8fafc);font-family:system-ui,Segoe UI,Inter,Arial,sans-serif;color:var(--fg)}
+  header{position:sticky;top:0;background:#fff8;backdrop-filter:blur(6px);border-bottom:1px solid #e5e7eb;z-index:10}
   .container{max-width:1100px;margin:0 auto;padding:12px 16px}
   h1{margin:6px 0 2px} .row{display:flex;gap:8px;align-items:center}
-  input,textarea{padding:10px;border:1px solid #d1d5db;border-radius:12px;font-size:14px}
-  button{border:1px solid #111827;background:#111827;color:#fff;border-radius:14px;
-  font-weight:600;padding:10px 14px;cursor:pointer}
-  button.ghost{background:transparent;color:#111827;border-color:transparent}
-  button.outline{background:#fff;border-color:#d1d5db;color:#111827}
+  input,textarea,select{padding:10px;border:1px solid #d1d5db;border-radius:12px;font-size:14px}
+  button{border:1px solid var(--brand);background:var(--brand);color:#fff;border-radius:14px;font-weight:600;padding:10px 14px;cursor:pointer}
+  button.ghost{background:transparent;color:var(--fg);border-color:transparent}
+  button.outline{background:#fff;border-color:var(--brand);color:var(--brand)}
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
   .card{background:#fff;border:1px solid #e5e7eb;border-radius:18px;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.04)}
   .card img{width:100%;height:160px;object-fit:cover}
-  .pad{padding:14px} .muted{color:var(--muted)}
-  .badge{border:1px solid #e5e7eb;background:#f3f4f6;padding:2px 8px;border-radius:999px;font-size:10px;letter-spacing:.06em;margin-left:6px}
-  .cart{position:fixed;right:16px;top:70px;width:360px;max-width:calc(100% - 32px);background:#fff;border:1px solid #e5e7eb;border-radius:18px;padding:14px;box-shadow:0 10px 30px rgba(0,0,0,.12);display:none}
-  .cart.open{display:block} .small{font-size:12px}
+  .pad{padding:14px} .muted{color:var(--muted)} .small{font-size:12px}
+  .badge{border:1px solid var(--brand-weak);background:var(--brand-weak);padding:2px 8px;border-radius:999px;font-size:10px;letter-spacing:.06em;margin-left:6px}
+  .cart{position:fixed;right:16px;top:70px;width:380px;max-width:calc(100% - 32px);background:#fff;border:1px solid #e5e7eb;border-radius:18px;padding:14px;box-shadow:0 10px 30px rgba(0,0,0,.12);display:none;max-height:85vh;overflow:auto}
+  .cart.open{display:block}
   footer{border-top:1px solid #e5e7eb;margin-top:36px;padding:16px 0;font-size:12px;color:var(--muted)}
 </style>
 </head>
@@ -43,35 +46,87 @@
 
   <section id="products" class="grid"></section>
 
+  <!-- Zuschnittliste -->
+  <section class="card" style="margin-top:16px">
+    <div class="pad">
+      <h3 style="margin:0 0 8px">Zuschnittliste (optional)</h3>
+      <p class="muted small" style="margin:0 0 8px">
+        Ein Eintrag pro Zeile: <b>Länge</b> × <b>Breite</b> × <b>Stärke</b> mm; <b>Menge</b>; <b>Kante</b> (z. B. 2x)<br/>
+        Beispiel: <i>800×400×18; 6; 2 mm ABS umlaufend</i>
+      </p>
+      <textarea id="cutlist" rows="5" placeholder="800×400×18; 6; 2mm ABS umlaufend" style="width:100%"></textarea>
+    </div>
+  </section>
+
+  <!-- Warenkorb -->
   <aside id="cart" class="cart">
     <div class="row" style="justify-content:space-between">
       <h3 style="margin:0">Warenkorb</h3>
       <button class="ghost" id="closeCart">✖</button>
     </div>
-    <div id="cartItems"></div>
+
+    <div id="cartItems" style="margin-top:6px"></div>
+
+    <!-- Summen -->
     <div class="row" style="justify-content:space-between;margin-top:8px">
-      <span class="muted">Zwischensumme</span><b id="subtotal">€0,00</b>
+      <span class="muted">Zwischensumme (Netto)</span><b id="subtotal">€0,00</b>
     </div>
-    <div class="row" style="gap:8px;margin-top:8px">
-      <button class="outline" id="clear">Leeren</button>
-      <a id="download" class="outline" download="holzwurm-warenkorb.json">
-        <button class="outline">JSON exportieren</button></a>
+    <label class="small" style="display:flex;gap:6px;align-items:center;margin-top:6px">
+      <input type="checkbox" id="vatToggle" checked/> Preise inkl. 20 % USt.
+    </label>
+    <div class="row" style="justify-content:space-between;margin-top:4px">
+      <span class="muted">Gesamt (Netto)</span><b id="totalNet">€0,00</b>
+    </div>
+    <div class="row" style="justify-content:space-between">
+      <span class="muted">Gesamt (Brutto)</span><b id="totalGross">€0,00</b>
     </div>
 
+    <div class="row" style="gap:8px;margin-top:8px">
+      <button class="outline" id="clear">Leeren</button>
+      <a id="download" class="outline" download="holzwurm-warenkorb.json"><button class="outline">JSON exportieren</button></a>
+    </div>
+
+    <!-- Anfrageformular -->
     <div class="card" style="margin-top:12px">
       <div class="pad">
         <h4 style="margin:4px 0 8px">Angebot anfragen</h4>
+
         <div class="row" style="gap:8px">
           <input id="c_company" placeholder="Firma (optional)" style="flex:1"/>
           <input id="c_name" placeholder="Ihr Name *" style="flex:1"/>
         </div>
+
         <input id="c_email" placeholder="E-Mail *" type="email" style="width:100%;margin-top:8px"/>
+        <input id="c_phone" placeholder="Telefon (optional)" style="width:100%;margin-top:8px"/>
+        <input id="c_addr" placeholder="Adresse (für Angebot/Lieferung)" style="width:100%;margin-top:8px"/>
+
+        <div class="row" style="gap:8px;margin-top:8px">
+          <select id="c_delivery" style="flex:1">
+            <option value="Abholung">Abholung</option>
+            <option value="Lieferung">Lieferung</option>
+          </select>
+          <input id="c_date" type="date" style="flex:1"/>
+        </div>
+
         <textarea id="c_notes" placeholder="Hinweise (z. B. Zuschnittmaße, Kante, Termin)" style="width:100%;margin-top:8px"></textarea>
+
+        <input id="c_files" type="file" multiple accept=".dxf,.pdf,.jpg,.jpeg,.png"
+               style="width:100%;margin-top:8px"/>
+        <p class="small muted" style="margin:6px 0 0">In der Demo werden Dateinamen/Größen nur im JSON aufgeführt.</p>
+
+        <label class="small" style="display:block;margin-top:6px">
+          <input type="checkbox" id="c_gdpr"/>
+          Ich bin mit der Verarbeitung meiner Daten zur Angebotserstellung einverstanden.
+        </label>
+
         <button id="send" style="width:100%;margin-top:8px">✅ Unverbindlich anfragen</button>
-        <div id="hint" class="small muted" style="margin-top:6px;display:none">✅ Demo: Anfrage in der Browser-Konsole ausgegeben.</div>
+        <div id="hint" class="small muted" style="margin-top:6px;display:none">
+          ✅ Demo: Anfrage in der Browser-Konsole ausgegeben. Für echten Versand bitte Mail-Integration aktivieren.
+        </div>
+
         <details class="small" style="margin-top:6px;color:#374151">
           <summary>JSON ansehen (für API)</summary>
-          <pre id="payload" style="max-height:180px;overflow:auto;background:#f3f4f6;padding:10px;border-radius:12px"></pre>
+          <pre id="payload" style="max-height:220px;overflow:auto;background:#f3f4f6;padding:10px;border-radius:12px"></pre>
         </details>
       </div>
     </div>
@@ -83,6 +138,7 @@
 </main>
 
 <script>
+/* --- Daten --- */
 const PRODUCTS=[
   {id:"panel-18",name:"Spanplatte 18 mm",sku:"SP-18-STD",price:22.9,unit:"m²",image:"https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=1200&auto=format&fit=crop",tags:["Zuschnitt","Plattenware"],description:"Klassische Spanplatte, formaldehydarm. Ideal für Korpusmöbel. Fixzuschnitt möglich."},
   {id:"panel-25",name:"Multiplex Birke 21 mm",sku:"MPX-B21",price:64.5,unit:"m²",image:"https://images.unsplash.com/photo-1545239351-1141bd82e8a6?q=80&w=1200&auto=format&fit=crop",tags:["Premium","Plattenware"],description:"Stabile Multiplex-Platte mit feiner Oberfläche. Für Sichtteile & Möbelbau."},
@@ -90,9 +146,12 @@ const PRODUCTS=[
   {id:"cnc-setup",name:"CNC-Bohr/Fräsung (Rüst + min)",sku:"CNC-SETUP",price:55,unit:"Auftrag",image:"https://images.unsplash.com/photo-1604335399105-a0d7b6c5d7d0?q=80&w=1200&auto=format&fit=crop",tags:["Service","CNC"],description:"Rüstung inkl. Programmierung (Dummy). Minutenpreis nach Aufwand."}
 ];
 const fmt = n=> new Intl.NumberFormat("de-AT",{style:"currency",currency:"EUR"}).format(n);
+
+/* --- State/Helper --- */
 const state = { cart: [], query: "" };
 const el = s => document.querySelector(s);
 
+/* --- Rendering Produkte --- */
 function renderProducts(){
   const q = state.query.toLowerCase();
   el("#products").innerHTML = PRODUCTS
@@ -114,6 +173,7 @@ function renderProducts(){
       </div>`).join("");
 }
 
+/* --- Cart Aktionen --- */
 function add(id){
   const p = PRODUCTS.find(x=>x.id===id);
   const f = state.cart.find(c=>c.id===id);
@@ -124,6 +184,7 @@ function changeQty(id,qty){ const it = state.cart.find(c=>c.id===id); if(it){ it
 function removeItem(id){ state.cart = state.cart.filter(c=>c.id!==id); renderCart(); }
 function clearCart(){ state.cart = []; renderCart(); }
 
+/* --- Rendering Warenkorb & Payload --- */
 function renderCart(){
   el("#cartCount").textContent = "(" + state.cart.length + ")";
   el("#cartItems").innerHTML = state.cart.map(it=>`
@@ -139,32 +200,68 @@ function renderCart(){
         </div>
       </div>
     </div>`).join("") || '<div class="muted small" style="padding:8px 0">Noch keine Artikel.</div>';
-  const sum = state.cart.reduce((a,it)=>a+it.qty*it.price,0);
-  el("#subtotal").textContent = fmt(sum);
+
+  /* Summen */
+  const VAT_RATE = 0.20;
+  const sumNet = state.cart.reduce((a,it)=>a+it.qty*it.price,0);
+  const vatOn = el("#vatToggle")?.checked ?? true;
+  const sumGross = vatOn ? sumNet*(1+VAT_RATE) : sumNet;
+
+  el("#subtotal").textContent   = fmt(sumNet);
+  el("#totalNet").textContent   = fmt(sumNet);
+  el("#totalGross").textContent = fmt(sumGross);
+
+  /* Download-Link */
   el("#download").setAttribute("href","data:application/json;charset=utf-8,"+encodeURIComponent(JSON.stringify(state.cart,null,2)));
+
+  /* Dateien (nur Metadaten) */
+  const files = Array.from((el("#c_files") && el("#c_files").files) ? el("#c_files").files : []);
+  const fileMeta = files.map(f => ({ name: f.name, size: f.size, type: f.type }));
+
+  /* Payload bauen */
   const payload = {
-    company: el("#c_company").value,
-    contact: el("#c_name").value,
-    email: el("#c_email").value,
-    notes: el("#c_notes").value,
+    company: el("#c_company")?.value || "",
+    contact: el("#c_name")?.value || "",
+    email:   el("#c_email")?.value || "",
+    phone:   el("#c_phone")?.value || "",
+    address: el("#c_addr")?.value || "",
+    delivery: el("#c_delivery")?.value || "Abholung",
+    requestedDate: el("#c_date")?.value || "",
+    notes:   el("#c_notes")?.value || "",
     items: state.cart.map(({id,sku,name,qty,price,unit})=>({id,sku,name,qty,price,unit})),
-    total: sum, createdAt: new Date().toISOString(), source: "holzwurm-dummy-shop-html"
+    totals: { net: sumNet, vatRate: VAT_RATE, gross: sumGross, vatIncluded: vatOn },
+    cutlist: el("#cutlist")?.value.trim() || "",
+    files: fileMeta,
+    createdAt: new Date().toISOString(),
+    source: "holzwurm-dummy-shop-html"
   };
   el("#payload").textContent = JSON.stringify(payload,null,2);
 }
 
+/* --- Bootstrapping --- */
 document.addEventListener("DOMContentLoaded",()=>{
   el("#year").textContent = new Date().getFullYear();
   el("#cartBtn").onclick = ()=> el("#cart").classList.add("open");
   el("#closeCart").onclick = ()=> el("#cart").classList.remove("open");
   el("#clear").onclick = clearCart;
-  el("#send").onclick = ()=>{
+  el("#search").oninput = (e)=>{ state.query = e.target.value; renderProducts(); };
+  if(el("#vatToggle")) el("#vatToggle").onchange = renderCart;
+
+  /* Senden (Demo: nur Konsole; hier könnte Formspree/EmailJS eingebunden werden) */
+  el("#send").onclick = async ()=>{
     const name = el("#c_name").value.trim(), email = el("#c_email").value.trim();
     if(!name || !email){ alert("Bitte Name und E-Mail angeben."); return; }
-    console.log("DEMO: Angebotsanfrage", JSON.parse(el("#payload").textContent));
-    el("#hint").style.display = "block";
+    if(!el("#c_gdpr").checked){ alert("Bitte Datenschutz-Einwilligung bestätigen."); return; }
+    try{
+      const payload = JSON.parse(el("#payload").textContent);
+      console.log("DEMO: Angebotsanfrage", payload);
+      el("#hint").style.display = "block";
+      alert("Danke! Ihre Anfrage wurde (in der Demo) erzeugt. Siehe Konsole/JSON.");
+      // Echte Mail? Hier z. B. Formspree POST:
+      // await fetch("https://formspree.io/f/DEINE_ID",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+    }catch(e){ console.error(e); alert("Fehler beim Erzeugen der Anfrage."); }
   };
-  el("#search").oninput = (e)=>{ state.query = e.target.value; renderProducts(); };
+
   renderProducts(); renderCart();
 });
 </script>
