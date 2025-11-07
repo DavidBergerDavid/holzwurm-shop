@@ -8,25 +8,30 @@
   :root{
     --brand:#0b3d2e;      /* Tannengrün */
     --brand-weak:#e6f2ee; /* helles Grün */
-    --bg:#fffaf2; --fg:#1f2937; --muted:#6b7280;
+    --bg:#fffaf2; --fg:#1f2937; --muted:#6b7280; --border:#e5e7eb;
   }
   *{box-sizing:border-box}
   body{margin:0;background:linear-gradient(#fff5e6,#f8fafc);font-family:system-ui,Segoe UI,Inter,Arial,sans-serif;color:var(--fg)}
-  header{position:sticky;top:0;background:#fff8;backdrop-filter:blur(6px);border-bottom:1px solid #e5e7eb;z-index:10}
+  header{position:sticky;top:0;background:#fff8;backdrop-filter:blur(6px);border-bottom:1px solid var(--border);z-index:10}
   .container{max-width:1100px;margin:0 auto;padding:12px 16px}
-  h1{margin:6px 0 2px} .row{display:flex;gap:8px;align-items:center}
+  h1{margin:6px 0 2px}
+  .row{display:flex;gap:8px;align-items:center}
   input,textarea,select{padding:10px;border:1px solid #d1d5db;border-radius:12px;font-size:14px}
   button{border:1px solid var(--brand);background:var(--brand);color:#fff;border-radius:14px;font-weight:600;padding:10px 14px;cursor:pointer}
   button.ghost{background:transparent;color:var(--fg);border-color:transparent}
   button.outline{background:#fff;border-color:var(--brand);color:var(--brand)}
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
-  .card{background:#fff;border:1px solid #e5e7eb;border-radius:18px;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.04)}
-  .card img{width:100%;height:160px;object-fit:cover}
+  .card{background:#fff;border:1px solid var(--border);border-radius:18px;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.04)}
+  .card img.main{width:100%;height:160px;object-fit:cover}
+  .thumb{width:56px;height:42px;object-fit:cover;border-radius:8px;cursor:pointer;border:1px solid var(--border)}
   .pad{padding:14px} .muted{color:var(--muted)} .small{font-size:12px}
   .badge{border:1px solid var(--brand-weak);background:var(--brand-weak);padding:2px 8px;border-radius:999px;font-size:10px;letter-spacing:.06em;margin-left:6px}
-  .cart{position:fixed;right:16px;top:70px;width:380px;max-width:calc(100% - 32px);background:#fff;border:1px solid #e5e7eb;border-radius:18px;padding:14px;box-shadow:0 10px 30px rgba(0,0,0,.12);display:none;max-height:85vh;overflow:auto}
+  .cart{position:fixed;right:16px;top:70px;width:380px;max-width:calc(100% - 32px);background:#fff;border:1px solid var(--border);border-radius:18px;padding:14px;box-shadow:0 10px 30px rgba(0,0,0,.12);display:none;max-height:85vh;overflow:auto}
   .cart.open{display:block}
-  footer{border-top:1px solid #e5e7eb;margin-top:36px;padding:16px 0;font-size:12px;color:var(--muted)}
+  footer{border-top:1px solid var(--border);margin-top:36px;padding:16px 0;font-size:12px;color:var(--muted)}
+  @media (max-width:720px){
+    .cart{width:100%;right:0;top:64px;border-radius:0;border-left:none;border-right:none}
+  }
 </style>
 </head>
 <body>
@@ -41,7 +46,8 @@
 <main class="container">
   <section>
     <h1>Online-Shop (Dummy)</h1>
-    <p class="muted">Produkte wählen, in den Warenkorb legen und eine <b>unverbindliche Angebotsanfrage</b> senden. Der Versand erfolgt hier als JSON-Payload.</p>
+    <p class="muted">Standardprodukte können <b>direkt bestellt</b> werden. Für <b>Individualzuschnitte</b> senden Sie eine
+      <b>unverbindliche Anfrage</b>. Der Versand erfolgt hier in der Demo als JSON-Payload.</p>
   </section>
 
   <!-- PRODUKT-LISTE -->
@@ -52,7 +58,7 @@
     <div class="pad">
       <h3 style="margin:0 0 8px">Individualzuschnitte – Anfrage</h3>
       <p class="muted small" style="margin:0 0 8px">
-        Beschreibe kurz, was gebaut werden soll (Material, Maße, Kante, Lochbild, Oberfläche).
+        Beschreiben Sie kurz, was gebaut werden soll (Material, Maße, Kante, Lochbild, Oberfläche).
         <br>Hinweis: Ein vollwertiger <b>Konfigurator</b> ist in Planung – zunächst freie Beschreibung.
       </p>
       <div class="row" style="gap:8px;margin-bottom:8px">
@@ -60,6 +66,17 @@
         <input id="custom_title" placeholder="Bezeichnung (z. B. TV-Board nach Maß)" style="flex:1"/>
       </div>
       <textarea id="custom_note" rows="4" placeholder="Details: Material, Maße (L×B×Stärke), Kanten, Stückliste, Hinweise…" style="width:100%"></textarea>
+
+      <!-- Lieferzeit & Staffelpreise -->
+      <div class="row" style="gap:8px;margin-top:8px">
+        <select id="custom_speed" style="flex:1">
+          <option value="8">Lieferzeit 8 Tage – € 1.467,90</option>
+          <option value="15" selected>Lieferzeit 15 Tage – € 1.425,96</option>
+          <option value="20">Lieferzeit 20 Tage – € 1.370,04</option>
+        </select>
+        <span class="small muted">Preis abhängig von Lieferzeit</span>
+      </div>
+
       <div class="row" style="gap:8px;margin-top:8px">
         <button class="outline" onclick="addCustom()">➕ Individualzuschnitt in Warenkorb</button>
         <a href="#" class="small muted" onclick="alert('Konfigurator-Demo folgt – aktuell bitte Beschreibung verwenden.');return false;">Konfigurator-Hinweis</a>
@@ -67,7 +84,7 @@
     </div>
   </section>
 
-  <!-- WARENKORB / ANFRAGE -->
+  <!-- WARENKORB / ANFRAGE / BESTELLUNG -->
   <aside id="cart" class="cart">
     <div class="row" style="justify-content:space-between">
       <h3 style="margin:0">Warenkorb</h3>
@@ -94,9 +111,10 @@
       <a id="download" class="outline" download="holzwurm-warenkorb.json"><button class="outline">JSON exportieren</button></a>
     </div>
 
+    <!-- ANFRAGE -->
     <div class="card" style="margin-top:12px">
       <div class="pad">
-        <h4 style="margin:4px 0 8px">Angebot anfragen</h4>
+        <h4 style="margin:4px 0 8px">Unverbindliche Angebotsanfrage</h4>
 
         <div class="row" style="gap:8px">
           <input id="c_company" placeholder="Firma (optional)" style="flex:1"/>
@@ -137,6 +155,32 @@
         </details>
       </div>
     </div>
+
+    <!-- BESTELLUNG (nur bei rein bestellbaren Artikeln) -->
+    <div id="orderCard" class="card" style="margin-top:12px;display:none">
+      <div class="pad">
+        <h4 style="margin:4px 0 8px">Jetzt bestellen</h4>
+        <div class="row" style="gap:8px">
+          <input id="o_name" placeholder="Ihr Name *" style="flex:1"/>
+          <input id="o_email" placeholder="E-Mail *" type="email" style="flex:1"/>
+        </div>
+        <input id="o_addr" placeholder="Lieferadresse *" style="width:100%;margin-top:8px"/>
+        <div class="row" style="gap:8px;margin-top:8px">
+          <select id="o_shipping" style="flex:1">
+            <option value="Abholung">Abholung</option>
+            <option value="Lieferung">Lieferung</option>
+          </select>
+          <select id="o_payment" style="flex:1">
+            <option value="Rechnung">Rechnung</option>
+            <option value="Bar/EC bei Abholung">Bar/EC bei Abholung</option>
+          </select>
+        </div>
+        <button id="orderNow" style="width:100%;margin-top:8px">🧾 Bestellung absenden</button>
+        <div class="small muted" style="margin-top:6px">
+          Hinweis: Demo-Checkout – Bestellung wird als JSON in der Konsole ausgegeben.
+        </div>
+      </div>
+    </div>
   </aside>
 
   <footer class="container">
@@ -145,67 +189,83 @@
 </main>
 
 <script>
-/* === PRODUKTE (Netto-Preise) === */
+/* === PRODUKTE (Netto-Preise GJ 2022) === */
 const PRODUCTS = [
   {
     id: "kom2",
     name: "Kommode 2-teilig",
     sku: "STD-K2",
-    price: 172.00,
-    unit: "Stk",
-    image: "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=1200&auto=format&fit=crop",
-    tags: ["Standardprodukt"],
-    description: "Zweiteilige Kommode in Standardausführung."
+    price: 181.00, unit: "Stk",
+    orderable: true,
+    images: [
+      "https://images.unsplash.com/photo-1600585154526-990dced4db0d?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1524758631624-e2822e304c36?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1616594039964-ae9021c8e468?q=80&w=1200&auto=format&fit=crop"
+    ],
+    description: "Zweiteilige Standard-Kommode: Korpus Spanplatte, Fronten lackiert, Metallgriffe."
   },
   {
     id: "kom3",
     name: "Kommode 3-teilig",
     sku: "STD-K3",
-    price: 230.00,
-    unit: "Stk",
-    image: "https://images.unsplash.com/photo-1493666438817-866a91353ca9?q=80&w=1200&auto=format&fit=crop",
-    tags: ["Standardprodukt"],
-    description: "Dreiteilige Kommode in Standardausführung."
+    price: 242.00, unit: "Stk",
+    orderable: true,
+    images: [
+      "https://images.unsplash.com/photo-1554995207-cd9034b1aaea?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1505691723518-36a5ac3b2c47?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1600585154526-990dced4db0d?q=80&w=1200&auto=format&fit=crop"
+    ],
+    description: "Dreiteilige Kommode, push-to-open, höhenverstellbare Füße, Kanten ABS 2 mm."
   },
   {
     id: "kom4",
     name: "Kommode 4-teilig",
     sku: "STD-K4",
-    price: 288.00,
-    unit: "Stk",
-    image: "https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?q=80&w=1200&auto=format&fit=crop",
-    tags: ["Standardprodukt"],
-    description: "Vierteilige Kommode in Standardausführung."
+    price: 303.00, unit: "Stk",
+    orderable: true,
+    images: [
+      "https://images.unsplash.com/photo-1615529182904-14819c35db37?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1505691938895-1758d7feb511?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1582582429416-aba2e7f7e0a0?q=80&w=1200&auto=format&fit=crop"
+    ],
+    description: "Vierteilige Kommode mit Vollauszügen (30 kg), Oberfläche HPL robust."
   },
   {
     id: "cab-small",
     name: "Schrank klein",
     sku: "STD-CS",
-    price: 385.00,
-    unit: "Stk",
-    image: "https://images.unsplash.com/photo-1598300183928-3c5c61b66c9e?q=80&w=1200&auto=format&fit=crop",
-    tags: ["Standardprodukt"],
-    description: "Kleiner Schrank, Basisvariante."
+    price: 405.00, unit: "Stk",
+    orderable: true,
+    images: [
+      "https://images.unsplash.com/photo-1616594039964-ae9021c8e468?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1598300183928-3c5c61b66c9e?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1505691723518-36a5ac3b2c47?q=80&w=1200&auto=format&fit=crop"
+    ],
+    description: "Kleiderschrank 2-türig, Fachböden verstellbar, Stange Alu, Softclose."
   },
   {
     id: "cab-big",
     name: "Schrank groß",
     sku: "STD-CB",
-    price: 435.00,
-    unit: "Stk",
-    image: "https://images.unsplash.com/photo-1505691938895-1758d7feb511?q=80&w=1200&auto=format&fit=crop",
-    tags: ["Standardprodukt"],
-    description: "Großer Schrank, Basisvariante."
+    price: 458.00, unit: "Stk",
+    orderable: true,
+    images: [
+      "https://images.unsplash.com/photo-1554995207-c18c203602cb?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1554995207-cd9034b1aaea?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1505691938895-1758d7feb511?q=80&w=1200&auto=format&fit=crop"
+    ],
+    description: "Großer Schrank mit 3 Fachböden und 2 Schubladen, Korpus Dekor Eiche."
   },
   {
     id: "custom-base",
     name: "Individualzuschnitte (Basis)",
     sku: "CUST-BASE",
-    price: 1330.00,
-    unit: "Auftrag",
-    image: "https://images.unsplash.com/photo-1545239351-1141bd82e8a6?q=80&w=1200&auto=format&fit=crop",
-    tags: ["Individual"],
-    description: "Basispreis für individuelle Zuschnitt-/Projektarbeiten."
+    price: 1398.00, unit: "Auftrag",
+    inquiryOnly: true,
+    images: [
+      "https://images.unsplash.com/photo-1555529771-35a38c3b32c9?q=80&w=1200&auto=format&fit=crop"
+    ],
+    description: "Basis für maßgefertigte Möbel-/Zuschnitte. Skizze/Details bitte beilegen."
   }
 ];
 
@@ -213,53 +273,85 @@ const fmt = n=> new Intl.NumberFormat("de-AT",{style:"currency",currency:"EUR"})
 const state = { cart: [], query: "" };
 const el = s => document.querySelector(s);
 
-/* Produkte rendern */
+/* Produkte rendern (mit Mini-Galerie) */
 function renderProducts(){
   const q = state.query.toLowerCase();
   el("#products").innerHTML = PRODUCTS
     .filter(p => (p.name+p.sku+(p.tags||[]).join(" ")).toLowerCase().includes(q))
-    .map(p => `
+    .map(p => {
+      const imgs = p.images && p.images.length ? p.images : ["https://picsum.photos/800/500"];
+      return `
       <div class="card">
-        <img src="${p.image}" alt="${p.name}"/>
+        <img class="main" src="${imgs[0]}" alt="${p.name}" data-main="${p.id}" />
         <div class="pad">
           <div class="row" style="justify-content:space-between;align-items:flex-start">
             <div><b>${p.name}</b>${(p.tags||[]).map(t=>`<span class="badge">${t}</span>`).join("")}</div>
             <div class="small muted" title="Artikelnummer">${p.sku}</div>
           </div>
-          <p class="small muted" style="margin:6px 0 8px">${p.description}</p>
+          <p class="small muted" style="margin:6px 0 8px">${p.description || ""}</p>
+
+          ${imgs.length>1 ? `
+            <div class="row" style="gap:6px;margin-bottom:6px">
+              ${imgs.map(u=>`<img class="thumb" src="${u}" alt="thumb" onclick="swapImage('${p.id}','${u}')">`).join("")}
+            </div>` : ""}
+
           <div class="row" style="justify-content:space-between">
             <div class="small"><span class="muted">Preis</span> <b>${fmt(p.price)}</b> / ${p.unit}</div>
             <button onclick="add('${p.id}')">🛒 In den Warenkorb</button>
           </div>
+
+          ${p.orderable ? `<div class="small muted" style="margin-top:6px">Direkt bestellbar</div>`
+                        : `<div class="small muted" style="margin-top:6px">Nur Anfrage (Individual)</div>`}
         </div>
-      </div>`).join("");
+      </div>`;
+    }).join("");
+}
+function swapImage(pid,url){
+  const img = document.querySelector(`img[data-main="${pid}"]`);
+  if(img) img.src = url;
 }
 
 /* Warenkorb-Operationen */
 function add(id){
   const p = PRODUCTS.find(x=>x.id===id);
-  const f = state.cart.find(c=>c.id===id && !c.note); // Standardartikel zusammenfassen; Custom hat note
-  if(f) f.qty+=1; else state.cart.push({...p, qty:1});
+  const f = state.cart.find(c=>c.id===id && !c.note); // Standardartikel zusammenfassen
+  if(f) f.qty+=1;
+  else state.cart.push({...p, qty:1, image: (p.images&&p.images[0]) || ""});
   renderCart();
 }
 function changeQty(id,qty){ const it = state.cart.find(c=>c.id===id); if(it){ it.qty = Math.max(1, qty||1); renderCart(); } }
 function removeItem(id){ state.cart = state.cart.filter(c=>c.id!==id); renderCart(); }
 function clearCart(){ state.cart = []; renderCart(); }
 
-/* Individualzuschnitt hinzufügen */
+/* Individualzuschnitt hinzufügen (mit Lieferzeit-Preis) */
 function addCustom(){
   const qty  = Math.max(1, parseInt(el("#custom_qty").value || "1", 10));
   const name = (el("#custom_title").value || "Individualzuschnitt").trim();
   const note = (el("#custom_note").value || "").trim();
   const base = PRODUCTS.find(p => p.id === "custom-base");
   if(!base){ alert("Basisartikel 'Individualzuschnitte' fehlt."); return; }
+
+  const speed = (el("#custom_speed")?.value || "15");
+  const priceMap = { "8": 1467.90, "15": 1425.96, "20": 1370.04 };
+  const price = priceMap[speed] ?? base.price;
+
   const id = "custom-" + Date.now();
   state.cart.push({
-    id, sku: base.sku, name: name || base.name,
-    price: base.price, unit: base.unit, image: base.image,
-    qty, note
+    id,
+    sku: base.sku + `-${speed}d`,
+    name: name || base.name,
+    price,
+    unit: base.unit,
+    image: (base.images&&base.images[0]) || "",
+    qty, note,
+    inquiryOnly: true
   });
-  el("#custom_title").value = ""; el("#custom_note").value  = ""; el("#custom_qty").value   = 1;
+
+  el("#custom_title").value = "";
+  el("#custom_note").value  = "";
+  el("#custom_qty").value   = 1;
+  if(el("#custom_speed")) el("#custom_speed").value = "15";
+
   renderCart();
 }
 
@@ -268,10 +360,10 @@ function renderCart(){
   el("#cartCount").textContent = "(" + state.cart.length + ")";
   el("#cartItems").innerHTML = state.cart.map(it=>`
     <div class="row" style="gap:8px;margin:10px 0">
-      <img src="${it.image}" style="width:72px;height:56px;object-fit:cover;border-radius:10px">
+      <img src="${it.image||'https://picsum.photos/200/150'}" style="width:72px;height:56px;object-fit:cover;border-radius:10px">
       <div style="flex:1">
         <div><b>${it.name}</b></div>
-        <div class="small muted">${it.sku}</div>
+        <div class="small muted">${it.sku||""}</div>
         ${it.note ? `<div class="small" style="margin-top:4px"><b>Notiz:</b> ${it.note}</div>` : ""}
         <div class="small">${fmt(it.price)} / ${it.unit}</div>
         <div class="row" style="gap:6px;margin-top:6px">
@@ -306,15 +398,46 @@ function renderCart(){
     notes:   el("#c_notes")?.value || "",
     items: state.cart.map(({id,sku,name,qty,price,unit,note})=>({id,sku,name,qty,price,unit,note})),
     totals: { net: sumNet, vatRate: VAT_RATE, gross: sumGross, vatIncluded: vatOn },
-    cutlist: "", // falls du eine zusätzliche Cutlist-Textarea nutzt, hier befüllen
     files: fileMeta,
     createdAt: new Date().toISOString(),
     source: "holzwurm-dummy-shop-html"
   };
-  // falls eine separate Cutlist-Textarea vorhanden ist:
-  const cut = document.getElementById("cutlist"); if(cut) payload.cutlist = cut.value.trim();
-
   el("#payload").textContent = JSON.stringify(payload,null,2);
+
+  /* Bestellkarte nur zeigen, wenn alle Positionen bestellbar sind (keine inquiryOnly) */
+  const hasItems = state.cart.length>0;
+  const allOrderable = hasItems && state.cart.every(i => i.inquiryOnly ? false : (i.orderable ?? true));
+  const orderCard = el("#orderCard");
+  if(orderCard) orderCard.style.display = allOrderable ? "block" : "none";
+
+  /* Order-Button binden */
+  if(allOrderable){
+    const orderPayload = {
+      type: "order",
+      customer: {
+        name:  el("#o_name")?.value || "",
+        email: el("#o_email")?.value || "",
+        address: el("#o_addr")?.value || "",
+        shipping: el("#o_shipping")?.value || "Abholung",
+        payment: el("#o_payment")?.value || "Rechnung"
+      },
+      items: state.cart.map(({id,sku,name,qty,price,unit})=>({id,sku,name,qty,price,unit})),
+      totals: { net: sumNet, vatRate: VAT_RATE, gross: sumGross, vatIncluded: vatOn },
+      createdAt: new Date().toISOString(),
+      source: "holzwurm-dummy-shop-html"
+    };
+    const orderBtn = el("#orderNow");
+    if(orderBtn){
+      orderBtn.onclick = ()=>{
+        if(!orderPayload.customer.name || !orderPayload.customer.email || !orderPayload.customer.address){
+          alert("Bitte Name, E-Mail und Lieferadresse angeben.");
+          return;
+        }
+        console.log("DEMO: Bestellung", orderPayload);
+        alert("Danke! Bestellung (Demo) erzeugt. Siehe Konsole.");
+      };
+    }
+  }
 }
 
 /* Init */
@@ -326,6 +449,7 @@ document.addEventListener("DOMContentLoaded",()=>{
   el("#search").oninput = (e)=>{ state.query = e.target.value; renderProducts(); };
   if(el("#vatToggle")) el("#vatToggle").onchange = renderCart;
 
+  /* Anfrage absenden (Demo) */
   el("#send").onclick = async ()=>{
     const name = el("#c_name").value.trim(), email = el("#c_email").value.trim();
     if(!name || !email){ alert("Bitte Name und E-Mail angeben."); return; }
@@ -335,7 +459,7 @@ document.addEventListener("DOMContentLoaded",()=>{
       console.log("DEMO: Angebotsanfrage", payload);
       el("#hint").style.display = "block";
       alert("Danke! Ihre Anfrage wurde (in der Demo) erzeugt. Siehe Konsole/JSON.");
-      // Echte Mail? Hier z. B. Formspree POST:
+      // Echte Mail? Hier z. B. Formspree:
       // await fetch("https://formspree.io/f/DEINE_ID",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
     }catch(e){ console.error(e); alert("Fehler beim Erzeugen der Anfrage."); }
   };
