@@ -3,104 +3,163 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Holzwurm – Demo Shop</title>
+<title>Holzwurm – Tischlerei & Möbelteile</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#0b1217;             /* dunkler Hintergrund */
-    --panel:#0f1720;          /* Card Background */
-    --soft:#111b26;           /* weich */
-    --brand:#19b394;          /* Akzent */
-    --brand-2:#8bd6c9;
-    --text:#e6edf3;           /* Primär */
-    --muted:#9fb0bf;          /* Sekundär */
-    --border:#1f2b36;
+    /* Navy / Holz-Studio Look */
+    --navy:#072033;          /* Header */
+    --navy-2:#0b2f49;        /* Hover/Layer */
+    --bg:#0b1319;            /* Seite dunkel */
+    --panel:#0f1820;         /* Karten */
+    --soft:#0c141a;          /* Flächen */
+    --border:#1b2b3a;
+    --text:#e7edf3;
+    --muted:#9bb0c0;
+    --brand:#1fb69c;         /* Akzent */
+    --brand-2:#8fd8c8;
+    --chip:#133541;
     --ring:#1b7f6d;
-    --chip:#14303a;
-    --danger:#ff5d5d;
+    --danger:#ff6565;
   }
-
   *{box-sizing:border-box}
-  html,body{margin:0;height:100%;background:linear-gradient(180deg,#0b1318,#0b1217 60%,#0d0f12);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif}
-  a{color:inherit}
-  .container{max-width:1160px;margin:0 auto;padding:18px 16px}
+  html,body{margin:0;height:100%;background:linear-gradient(180deg,#0a1117,#0b1319 60%,#0b1217);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif}
+  a{color:inherit;text-decoration:none}
+  img{max-width:100%;display:block}
 
-  /* Header */
-  header{position:sticky;top:0;z-index:30;background:linear-gradient(180deg,rgba(11,18,23,.85),rgba(11,18,23,.6));backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
-  .brand{display:flex;gap:10px;align-items:center;font-weight:700}
-  .brand .logo{display:grid;place-items:center;width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--brand),#59c2ab)}
-  .row{display:flex;gap:10px;align-items:center}
+  /* Top header (navy) */
+  .topbar{position:sticky;top:0;z-index:50;background:linear-gradient(180deg,rgba(7,32,51,.97),rgba(7,32,51,.92));backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+  .container{max-width:1180px;margin:0 auto;padding:14px 16px}
+  .row{display:flex;gap:12px;align-items:center}
   .push{margin-left:auto}
+  .brand{display:flex;gap:10px;align-items:center}
+  .logo{display:grid;place-items:center;width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,#35c1ad,#128c78);font-size:20px}
+  .brand-name{font-weight:800;letter-spacing:.3px}
+  nav{display:flex;gap:22px;align-items:center;margin:0 22px}
+  nav a{padding:6px 2px;border-bottom:2px solid transparent}
+  nav a:hover{border-color:#2c94a0}
+  .chip{background:var(--chip);border:1px solid var(--border);padding:4px 10px;border-radius:999px;color:var(--brand-2);font-size:12px}
 
-  /* Inputs / Buttons */
-  input,select,textarea{background:#0c141a;color:var(--text);border:1px solid var(--border);border-radius:12px;padding:10px 12px;font-size:14px;outline:none}
-  input:focus,select:focus,textarea:focus{border-color:var(--ring);box-shadow:0 0 0 3px rgba(25,179,148,.25)}
-  button{border:1px solid transparent;background:var(--brand);color:#051316;border-radius:12px;font-weight:700;padding:10px 14px;cursor:pointer}
+  /* Buttons / Inputs */
+  input,select,textarea{background:#0b141a;color:var(--text);border:1px solid var(--border);border-radius:12px;padding:10px 12px;font-size:14px;outline:none}
+  input:focus,select:focus,textarea:focus{border-color:var(--ring);box-shadow:0 0 0 3px rgba(31,182,156,.25)}
+  button{border:1px solid transparent;background:var(--brand);color:#06201b;border-radius:12px;font-weight:700;padding:10px 14px;cursor:pointer}
   button:hover{filter:brightness(1.05)}
   button.ghost{background:transparent;color:var(--text);border-color:transparent}
-  button.outline{background:transparent;border-color:var(--brand);color:var(--brand)}
-  .chip{display:inline-flex;align-items:center;gap:6px;background:var(--chip);border:1px solid var(--border);color:var(--brand-2);padding:4px 8px;border-radius:999px;font-size:12px}
+  button.outline{background:transparent;border:1px solid var(--brand);color:var(--brand)}
+
+  /* Hero */
+  .hero{background:linear-gradient(180deg,#0b253b 0%, #0b1823 60%), url('https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=1600&auto=format&fit=crop') center/cover no-repeat; border-bottom:1px solid var(--border)}
+  .hero .container{padding:64px 16px}
+  .hero h1{margin:8px 0 6px;font-size:34px}
+  .hero p{margin:0;color:#c2d2df}
+
+  /* Sections */
+  .section{padding:26px 16px}
+  .section .container{max-width:1180px}
 
   /* Grid & Cards */
   .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
   .col-12{grid-column:span 12}
   .col-6{grid-column:span 6}
   .col-4{grid-column:span 4}
-  @media (max-width:960px){ .col-6,.col-4{grid-column:span 12}}
+  @media(max-width:960px){ .col-6,.col-4{grid-column:span 12} }
   .card{background:var(--panel);border:1px solid var(--border);border-radius:18px;overflow:hidden;box-shadow:0 12px 30px rgba(0,0,0,.28)}
   .pad{padding:16px}
   .muted{color:var(--muted)} .small{font-size:12px}
-  .spacer{height:14px}
 
   /* Product */
-  .hero{width:100%;height:200px;object-fit:cover;background:#0a0f13}
+  .heroimg{width:100%;height:200px;object-fit:cover;background:#0a0f13}
   .thumbs{display:flex;gap:8px;flex-wrap:wrap}
   .thumb{width:60px;height:45px;border-radius:8px;border:1px solid var(--border);object-fit:cover;cursor:pointer}
-  .line{display:flex;align-items:center;justify-content:space-between;gap:8px}
 
   /* Cart */
-  .cart{position:fixed;right:16px;top:74px;width:420px;max-width:calc(100% - 32px);background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:16px;box-shadow:0 16px 40px rgba(0,0,0,.45);display:none;max-height:85vh;overflow:auto}
+  .cart{position:fixed;right:16px;top:76px;width:420px;max-width:calc(100% - 32px);background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:16px;box-shadow:0 18px 42px rgba(0,0,0,.45);display:none;max-height:85vh;overflow:auto;z-index:100}
   .cart.open{display:block}
   .cart-item{display:flex;gap:10px;margin:10px 0}
-  .cart-item img{width:72px;height:56px;border-radius:10px;object-fit:cover;border:1px solid var(--border)}
+  .cart-item img{width:72px;height:56px;object-fit:cover;border-radius:10px;border:1px solid var(--border)}
+  .line{display:flex;align-items:center;justify-content:space-between;gap:10px}
   .divider{height:1px;background:var(--border);margin:10px 0}
 
-  footer{border-top:1px solid var(--border);margin-top:28px}
+  footer{border-top:1px solid var(--border);margin-top:24px}
+  .container-foot{max-width:1180px;margin:0 auto;padding:18px 16px}
+
+  /* Login modal */
+  .modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:120}
+  .modal.open{display:flex}
+  .modal-card{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:18px;max-width:420px;width:92%}
 </style>
 </head>
 <body>
 
-<header>
+<!-- Topbar / Navigation -->
+<header class="topbar">
   <div class="container row">
-    <div class="brand"><div class="logo">🌲</div>Holzwurm <span class="chip">Demo</span></div>
-    <div class="push row" style="gap:12px">
-      <input id="search" placeholder="Suche: Artikel, SKU, Schlagwort…" style="width:320px">
+    <div class="brand">
+      <div class="logo">🌲</div>
+      <div class="brand-name">HOLZWURM</div>
+      <span class="chip">Tischlerei</span>
+    </div>
+
+    <nav class="row">
+      <a href="#leistungen">Leistungen</a>
+      <a href="#shop">Möbelteile / Shop</a>
+      <a href="#jobs">Jobs</a>
+      <a href="#unternehmen">Unternehmen</a>
+      <a href="#downloads">Downloads</a>
+      <a href="#kontakt">Kontakt</a>
+    </nav>
+
+    <div class="push row">
+      <input id="search" placeholder="Suche im Shop…" style="width:280px">
       <button id="cartBtn">🛒 Warenkorb <span id="cartCount">(0)</span></button>
+      <button class="outline" id="loginBtn">Kunden-Login</button>
     </div>
   </div>
 </header>
 
-<main class="container">
-  <div class="grid">
-    <section class="col-12">
-      <h1 style="margin:8px 0 6px">Holzwurm – Shop</h1>
-      <p class="muted">Standardprodukte sind <b>direkt bestellbar</b>. Für <b>Individualzuschnitte</b> senden Sie eine unverbindliche <b>Anfrage</b>.
-        Diese Demo erzeugt JSON – ohne Backend.</p>
-    </section>
+<!-- Hero -->
+<section class="hero">
+  <div class="container">
+    <h1>Individuelle Möbel & präzise Zuschnitte</h1>
+    <p>Wir verbinden Handwerk mit digitalem Prozess – von Standard­produkten bis Maßarbeit.</p>
+  </div>
+</section>
 
-    <!-- PRODUKTE -->
-    <section id="products" class="col-12 grid"></section>
+<!-- Leistungen -->
+<section id="leistungen" class="section">
+  <div class="container">
+    <h2>Leistungen</h2>
+    <div class="grid" style="margin-top:10px">
+      <div class="col-4 card"><div class="pad"><h3>Innenausbau</h3><p class="muted">Küchen, Garderoben, Wohnmöbel – hochwertig geplant und gefertigt.</p></div></div>
+      <div class="col-4 card"><div class="pad"><h3>Möbelteile</h3><p class="muted">Standardteile und Plattenzuschnitte mit Kanten, Bohrungen, HPL.</p></div></div>
+      <div class="col-4 card"><div class="pad"><h3>Montage & Service</h3><p class="muted">Termintreu vor Ort: Lieferung, Aufbau, Anpassungen und Reparatur.</p></div></div>
+    </div>
+  </div>
+</section>
 
-    <!-- INDIVIDUALZUSCHNITTE -->
-    <section class="col-12 card">
+<!-- SHOP -->
+<section id="shop" class="section">
+  <div class="container">
+    <div class="row" style="justify-content:space-between;align-items:end">
+      <h2 style="margin:0">Möbelteile / Shop</h2>
+      <span class="muted small">Standardprodukte sind direkt bestellbar. Individualzuschnitte via Anfrage.</span>
+    </div>
+
+    <div id="products" class="grid" style="margin-top:12px"></div>
+
+    <!-- Individualzuschnitte -->
+    <article class="card" style="margin-top:16px">
       <div class="pad">
         <h3 style="margin:0 0 6px">Individualzuschnitte – Anfrage</h3>
-        <p class="muted small" style="margin:0 0 10px">Beschreiben Sie Material, Maße, Kanten, Oberfläche etc. Ein Konfigurator folgt – zunächst freie Beschreibung. Lieferzeit & Preis abhängig von Auswahl.</p>
+        <p class="muted small" style="margin:0 0 10px">
+          Beschreiben Sie kurz Material, Maße, Kanten und Oberfläche. Preise richten sich u.a. nach Lieferzeit.
+        </p>
         <div class="row" style="gap:10px;margin-bottom:8px">
           <input id="custom_qty" type="number" min="1" value="1" style="width:110px">
-          <input id="custom_title" placeholder="Bezeichnung (z.B. TV-Board nach Maß)" style="flex:1">
+          <input id="custom_title" placeholder="Bezeichnung (z. B. TV-Board nach Maß)" style="flex:1">
         </div>
         <textarea id="custom_note" rows="4" placeholder="Details: Material, Maße (L×B×Stärke), Kanten, Stückliste, Hinweise…" style="width:100%"></textarea>
         <div class="row" style="gap:10px;margin-top:10px">
@@ -113,12 +172,65 @@
         </div>
         <div class="row" style="gap:10px;margin-top:10px">
           <button class="outline" onclick="addCustom()">➕ Individualzuschnitt in Warenkorb</button>
-          <span class="small muted">Skizzen/Zeichnungen können im Anfrageformular angehängt werden.</span>
+          <span class="small muted">Skizzen (PDF/DXF/JPG) später im Anfrageformular hochladen.</span>
         </div>
       </div>
-    </section>
+    </article>
   </div>
-</main>
+</section>
+
+<!-- Jobs -->
+<section id="jobs" class="section">
+  <div class="container">
+    <h2>Jobs / Karriere</h2>
+    <div class="grid" style="margin-top:10px">
+      <div class="col-6 card"><div class="pad"><h3>Tischler:in (m/w/d)</h3><p class="muted">Vollzeit. Montagekenntnisse von Vorteil. Moderne Werkstatt, familiäres Team.</p><button class="outline">Initiativ bewerben</button></div></div>
+      <div class="col-6 card"><div class="pad"><h3>Lehrling Tischlerei (m/w/d)</h3><p class="muted">Du liebst Holz und Technik? Wir bilden dich top aus – bewirb dich jetzt!</p><button class="outline">Mehr erfahren</button></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Unternehmen -->
+<section id="unternehmen" class="section">
+  <div class="container">
+    <h2>Unternehmen</h2>
+    <div class="grid" style="margin-top:10px">
+      <div class="col-6 card"><div class="pad"><h3>Wer wir sind</h3><p class="muted">Holzwurm steht für Qualitäts­handwerk und digitale Prozesse. Kurze Wege, faire Preise, saubere Arbeit.</p></div></div>
+      <div class="col-6 card"><div class="pad"><h3>Nachhaltigkeit</h3><p class="muted">Regionale Zulieferer, langlebige Produkte, Verschnitt­optimierung & Energie­monitoring in Planung.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Downloads -->
+<section id="downloads" class="section">
+  <div class="container">
+    <h2>Downloads</h2>
+    <div class="grid" style="margin-top:10px">
+      <div class="col-4 card"><div class="pad"><h3>Produktflyer</h3><p class="muted small">PDF (3 MB)</p><button class="outline">Herunterladen</button></div></div>
+      <div class="col-4 card"><div class="pad"><h3>Montagehinweise</h3><p class="muted small">PDF (1,2 MB)</p><button class="outline">Herunterladen</button></div></div>
+      <div class="col-4 card"><div class="pad"><h3>Ausschreibungstext</h3><p class="muted small">DOCX (120 KB)</p><button class="outline">Herunterladen</button></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Kontakt -->
+<section id="kontakt" class="section">
+  <div class="container">
+    <h2>Kontakt</h2>
+    <div class="grid" style="margin-top:10px">
+      <div class="col-6 card"><div class="pad">
+        <h3>So erreichen Sie uns</h3>
+        <p class="muted">Holzwurm GmbH · Musterstraße 1 · 1234 Holzstadt<br> Tel. +43 660 123 45 67 · <a href="mailto:info@holzwurm.at">info@holzwurm.at</a></p>
+      </div></div>
+      <div class="col-6 card"><div class="pad">
+        <h3>Kontaktformular</h3>
+        <div class="row" style="gap:10px"><input placeholder="Ihr Name" style="flex:1"><input placeholder="E-Mail" style="flex:1"></div>
+        <textarea rows="4" placeholder="Ihre Nachricht" style="width:100%;margin-top:8px"></textarea>
+        <button style="margin-top:8px">Absenden</button>
+      </div></div>
+    </div>
+  </div>
+</section>
 
 <!-- CART -->
 <aside id="cart" class="cart">
@@ -153,29 +265,22 @@
     <input id="c_phone" placeholder="Telefon (optional)" style="width:100%;margin-top:8px">
     <input id="c_addr" placeholder="Adresse (für Angebot/Lieferung)" style="width:100%;margin-top:8px">
     <div class="row" style="gap:10px;margin-top:8px">
-      <select id="c_delivery" style="flex:1">
-        <option value="Abholung">Abholung</option>
-        <option value="Lieferung">Lieferung</option>
-      </select>
+      <select id="c_delivery" style="flex:1"><option>Abholung</option><option>Lieferung</option></select>
       <input id="c_date" type="date" style="flex:1">
     </div>
     <textarea id="c_notes" placeholder="Hinweise (z.B. Zuschnittmaße, Kante, Termin)" style="width:100%;margin-top:8px"></textarea>
     <input id="c_files" type="file" multiple accept=".dxf,.pdf,.jpg,.jpeg,.png" style="width:100%;margin-top:8px">
     <p class="small muted" style="margin:6px 0 0">In der Demo werden Dateinamen/Größen nur im JSON aufgeführt.</p>
-    <label class="small" style="display:block;margin-top:6px">
-      <input type="checkbox" id="c_gdpr"> Ich bin mit der Verarbeitung meiner Daten zur Angebotserstellung einverstanden.
-    </label>
+    <label class="small" style="display:block;margin-top:6px"><input type="checkbox" id="c_gdpr"> Ich bin mit der Verarbeitung meiner Daten zur Angebotserstellung einverstanden.</label>
     <button id="send" style="width:100%;margin-top:10px">✅ Unverbindlich anfragen</button>
-    <div id="hint" class="small muted" style="margin-top:6px;display:none">
-      ✅ Demo: Anfrage in der Browser-Konsole ausgegeben. Für echten Versand bitte Mail-Integration aktivieren.
-    </div>
+    <div id="hint" class="small muted" style="margin-top:6px;display:none">✅ Demo: Anfrage in der Browser-Konsole ausgegeben.</div>
     <details class="small" style="margin-top:6px;color:#c6d1db">
       <summary>JSON ansehen (für API)</summary>
       <pre id="payload" style="max-height:220px;overflow:auto;background:#0b1217;padding:10px;border-radius:12px;border:1px solid var(--border)"></pre>
     </details>
   </div>
 
-  <!-- Bestellung (nur wenn alle Positionen bestellbar) -->
+  <!-- Bestellung -->
   <div id="orderCard" class="pad" style="margin-top:12px;background:var(--soft);border:1px solid var(--border);border-radius:14px;display:none">
     <h4 style="margin:0 0 10px">Jetzt bestellen</h4>
     <div class="row" style="gap:10px">
@@ -184,188 +289,149 @@
     </div>
     <input id="o_addr" placeholder="Lieferadresse *" style="width:100%;margin-top:8px">
     <div class="row" style="gap:10px;margin-top:8px">
-      <select id="o_shipping" style="flex:1">
-        <option value="Abholung">Abholung</option>
-        <option value="Lieferung">Lieferung</option>
-      </select>
-      <select id="o_payment" style="flex:1">
-        <option value="Rechnung">Rechnung</option>
-        <option value="Bar/EC bei Abholung">Bar/EC bei Abholung</option>
-      </select>
+      <select id="o_shipping" style="flex:1"><option>Abholung</option><option>Lieferung</option></select>
+      <select id="o_payment" style="flex:1"><option>Rechnung</option><option>Bar/EC bei Abholung</option></select>
     </div>
     <button id="orderNow" style="width:100%;margin-top:10px">🧾 Bestellung absenden</button>
     <div class="small muted" style="margin-top:6px">Demo-Checkout – Bestellung wird als JSON in der Konsole ausgegeben.</div>
   </div>
 </aside>
 
-<footer class="container">
-  <div class="row" style="justify-content:space-between">
-    <p class="small muted">© <span id="year"></span> Holzwurm GmbH – Demo ohne Backend</p>
-    <p class="small muted">UI: Neo-Dark · by Holzwurm 🤍</p>
+<!-- Login Modal -->
+<div id="loginModal" class="modal" aria-hidden="true">
+  <div class="modal-card">
+    <div class="line"><h3 style="margin:0">Kunden-Login</h3><button class="ghost" id="closeLogin">✖</button></div>
+    <p class="muted small">Demo-Login (ohne Persistenz). Für echten Login später OAuth / Backend anbinden.</p>
+    <input id="l_email" placeholder="E-Mail" type="email" style="width:100%">
+    <input id="l_pass" placeholder="Passwort" type="password" style="width:100%;margin-top:8px">
+    <label class="small" style="display:block;margin-top:6px"><input type="checkbox"> angemeldet bleiben</label>
+    <button id="doLogin" style="width:100%;margin-top:10px">Anmelden</button>
+  </div>
+</div>
+
+<footer>
+  <div class="container-foot row" style="justify-content:space-between">
+    <p class="small muted">© <span id="year"></span> Holzwurm GmbH · Tischlerei & Möbelteile</p>
+    <p class="small muted">Design: Navy/Studio-Look · Demo ohne Backend</p>
   </div>
 </footer>
 
 <script>
-/* ===========================
-   Produktdaten (GJ 2022) + Fotos aus demselben Ordner
-   =========================== */
+/* ===== Produktdaten + Bilder (liegen im selben Ordner wie index.html) ===== */
 const PRODUCTS = [
-  {
-    id: "kom2",
-    name: "Kommode 2-teilig",
-    sku: "STD-K2",
-    price: 181.00, unit: "Stk",
-    orderable: true,
-    images: ["Kommode 2 teillig ikea.avif"],
-    description: "Zweiteilige Standard-Kommode: Korpus Spanplatte, Fronten lackiert, Metallgriffe."
+  { id:"kom2", name:"Kommode 2-teilig", sku:"STD-K2", price:181.00, unit:"Stk", orderable:true,
+    images:["Kommode 2 teillig ikea.avif"],
+    description:"Zweiteilige Standard-Kommode: Korpus Spanplatte, Fronten lackiert, Metallgriffe."
   },
-  {
-    id: "kom3",
-    name: "Kommode 3-teilig",
-    sku: "STD-K3",
-    price: 242.00, unit: "Stk",
-    orderable: true,
-    images: ["Kommode 3 teillig ikea.avif"],
-    description: "Dreiteilige Kommode, push-to-open, höhenverstellbare Füße, Kanten ABS 2 mm."
+  { id:"kom3", name:"Kommode 3-teilig", sku:"STD-K3", price:242.00, unit:"Stk", orderable:true,
+    images:["Kommode 3 teillig ikea.avif"],  /* <-- WICHTIG: Bild vorhanden */
+    description:"Dreiteilige Kommode, push-to-open, höhenverstellbare Füße, ABS-Kanten."
   },
-  {
-    id: "kom4",
-    name: "Kommode 4-teilig",
-    sku: "STD-K4",
-    price: 303.00, unit: "Stk",
-    orderable: true,
-    images: ["Kommode 4 teillig ikea.avif","Kommode 4 teilig weiß ikea 2.avif"],
-    description: "Vierteilige Kommode mit Vollauszügen (30 kg), Oberfläche robust."
+  { id:"kom4", name:"Kommode 4-teilig", sku:"STD-K4", price:303.00, unit:"Stk", orderable:true,
+    images:["Kommode 4 teillig ikea.avif","Kommode 4 teilig weiß ikea 2.avif"],
+    description:"Vierteilige Kommode mit Vollauszügen (30 kg), robuste Oberfläche."
   },
-  {
-    id: "schrklein",
-    name: "Schrank klein",
-    sku: "STD-CS",
-    price: 405.00, unit: "Stk",
-    orderable: true,
-    images: ["schrank klein ikea.avif","schrank klein ikea 2.avif"],
-    description: "Kleiderschrank 2-türig, Fachböden verstellbar, Stange Alu, Softclose."
+  { id:"schrklein", name:"Schrank klein", sku:"STD-CS", price:405.00, unit:"Stk", orderable:true,
+    images:["schrank klein ikea.avif","schrank klein ikea 2.avif"],
+    description:"Kleiderschrank 2-türig, verstellbare Böden, Alu-Stange, Softclose."
   },
-  {
-    id: "schrgross",
-    name: "Schrank groß",
-    sku: "STD-CB",
-    price: 458.00, unit: "Stk",
-    orderable: true,
-    images: ["Schrank groß ikea weiß.avif","Schrank groß ikea 2.avif"],
-    description: "Großer Schrank mit 3 Fachböden und 2 Schubladen, Korpus Dekor."
+  { id:"schrgross", name:"Schrank groß", sku:"STD-CB", price:458.00, unit:"Stk", orderable:true,
+    images:["Schrank groß ikea weiß.avif","Schrank groß ikea 2.avif"],
+    description:"Großer Schrank mit 3 Fachböden und 2 Schubladen, Korpus Dekor."
   },
-  {
-    id: "custom-base",
-    name: "Individualzuschnitte (Basis)",
-    sku: "CUST-BASE",
-    price: 1398.00, unit: "Auftrag",
-    inquiryOnly: true,
-    images: ["custom-skizze.avif"], // falls nicht vorhanden, wird Platzhalter verwendet
-    description: "Basis für maßgefertigte Möbel-/Zuschnitte. Skizze/Details bitte beilegen."
+  { id:"custom-base", name:"Individualzuschnitte (Basis)", sku:"CUST-BASE", price:1398.00, unit:"Auftrag", inquiryOnly:true,
+    images:["custom-skizze.avif"],  // optional; sonst Platzhalter
+    description:"Basis für maßgefertigte Zuschnitte. Skizze/Details bitte beilegen."
   }
 ];
 
 /* Varianten */
 const COLORS  = ["weiß","grau","braun","schwarz"];
 const FINISH  = ["glatt","matt"];
-const DESIGNS = Array.from({length:64},(_,i)=>String(i+1).padStart(2,"0")); // 01..64
+const DESIGNS = Array.from({length:64},(_,i)=>"Design "+String(i+1).padStart(2,"0"));
 
-/* Helpers */
+/* Helper */
 const el = s=>document.querySelector(s);
 const fmt = n=> new Intl.NumberFormat("de-AT",{style:"currency",currency:"EUR"}).format(n);
 const uid = ()=> Math.random().toString(36).slice(2)+Date.now().toString(36);
 const state = { cart:[], query:"" };
 
-/* Produkte rendern – inkl. Varianten */
+/* Produkte rendern (mit Varianten) */
 function renderProducts(){
   const q = state.query.toLowerCase();
-  const list = PRODUCTS.filter(p=>(p.name+p.sku).toLowerCase().includes(q));
-  const grid = document.getElementById("products");
-  grid.className = "col-12 grid";
-  grid.style.gridTemplateColumns = "repeat(12,1fr)";
-  grid.innerHTML = list.map(p=>{
-    const imgs = p.images?.length?p.images:["https://picsum.photos/1200/800?blur=3"];
-    return `
-    <article class="card" style="grid-column:span 4">
-      <img class="hero" src="${imgs[0]}" alt="${p.name}" data-main="${p.id}">
-      <div class="pad">
-        <div class="line"><b>${p.name}</b><span class="muted small">${p.sku}</span></div>
-        <p class="muted small" style="margin:8px 0">${p.description||""}</p>
+  el("#products").innerHTML = PRODUCTS
+    .filter(p => (p.name+p.sku).toLowerCase().includes(q))
+    .map(p=>{
+      const imgs = p.images?.length ? p.images : ["https://picsum.photos/1200/800?blur=3"];
+      return `
+      <article class="card col-4" style="grid-column:span 4">
+        <img class="heroimg" src="${imgs[0]}" alt="${p.name}" data-main="${p.id}">
+        <div class="pad">
+          <div class="line"><b>${p.name}</b><span class="muted small">${p.sku}</span></div>
+          <p class="muted small" style="margin:8px 0">${p.description||""}</p>
+          ${imgs.length>1?`<div class="thumbs">${imgs.map(u=>`<img class="thumb" src="${u}" alt="thumb" onclick="swapImage('${p.id}','${u}')">`).join("")}</div>`:""}
 
-        ${imgs.length>1?`
-        <div class="thumbs">
-          ${imgs.map(u=>`<img class="thumb" src="${u}" alt="thumb" onclick="swapImage('${p.id}','${u}')">`).join("")}
-        </div>`:""}
+          <div class="row" style="gap:10px;margin-top:10px">
+            <div style="flex:1">
+              <label class="small muted">Korpusfarbe</label>
+              <select id="opt-color-${p.id}" style="width:100%">${COLORS.map(c=>`<option>${c}</option>`).join("")}</select>
+            </div>
+            <div style="flex:1">
+              <label class="small muted">Oberfläche</label>
+              <select id="opt-finish-${p.id}" style="width:100%">${FINISH.map(c=>`<option>${c}</option>`).join("")}</select>
+            </div>
+          </div>
+          <div class="row" style="gap:10px;margin-top:10px">
+            <div style="flex:1">
+              <label class="small muted">Frontdesign</label>
+              <select id="opt-design-${p.id}" style="width:100%">${DESIGNS.map(d=>`<option>${d}</option>`).join("")}</select>
+            </div>
+            <div style="width:120px">
+              <label class="small muted">Menge</label>
+              <input id="qty-${p.id}" type="number" min="1" value="1" style="width:100%">
+            </div>
+          </div>
 
-        <!-- Varianten -->
-        <div class="row" style="gap:10px;margin-top:10px">
-          <div style="flex:1">
-            <label class="small muted">Korpusfarbe</label>
-            <select id="opt-color-${p.id}" style="width:100%">${COLORS.map(c=>`<option>${c}</option>`).join("")}</select>
+          <div class="line" style="margin-top:12px">
+            <div class="small"><span class="muted">Preis</span> <b>${fmt(p.price)}</b> / ${p.unit}</div>
+            <button onclick="add('${p.id}')">🛒 In den Warenkorb</button>
           </div>
-          <div style="flex:1">
-            <label class="small muted">Oberfläche</label>
-            <select id="opt-finish-${p.id}" style="width:100%">${FINISH.map(c=>`<option>${c}</option>`).join("")}</select>
-          </div>
+          <div class="small muted" style="margin-top:6px">${p.orderable? "Direkt bestellbar":"Nur Anfrage (Individual)"}</div>
         </div>
-        <div class="row" style="gap:10px;margin-top:10px">
-          <div style="flex:1">
-            <label class="small muted">Frontdesign</label>
-            <select id="opt-design-${p.id}" style="width:100%">
-              ${DESIGNS.map(d=>`<option>Design ${d}</option>`).join("")}
-            </select>
-          </div>
-          <div style="width:130px">
-            <label class="small muted">Menge</label>
-            <input id="qty-${p.id}" type="number" min="1" value="1" style="width:100%">
-          </div>
-        </div>
-
-        <div class="line" style="margin-top:12px">
-          <div class="small"><span class="muted">Preis</span> <b>${fmt(p.price)}</b> / ${p.unit}</div>
-          <button onclick="add('${p.id}')">🛒 In den Warenkorb</button>
-        </div>
-        <div class="small muted" style="margin-top:6px">${p.orderable? "Direkt bestellbar":"Nur Anfrage (Individual)"}</div>
-      </div>
-    </article>`;
-  }).join("");
+      </article>`;
+    }).join("");
 }
-function swapImage(pid,url){ const img = document.querySelector(`img[data-main="${pid}"]`); if(img) img.src=url; }
+function swapImage(pid,url){ const img=document.querySelector(`img[data-main="${pid}"]`); if(img) img.src=url; }
 
 /* Warenkorb-Logik mit Varianten-Zusammenfassung */
 function add(pid){
   const p = PRODUCTS.find(x=>x.id===pid);
-  const qty = Math.max(1,parseInt(el(`#qty-${pid}`)?.value||"1",10));
+  const qty = Math.max(1, parseInt(el(`#qty-${pid}`)?.value||"1",10));
   const color  = el(`#opt-color-${pid}`)?.value || "weiß";
   const finish = el(`#opt-finish-${pid}`)?.value || "glatt";
   const design = el(`#opt-design-${pid}`)?.value || "Design 01";
-
   const mergeKey = `${pid}__${color}__${finish}__${design}`;
 
   const existing = state.cart.find(i=>i.mergeKey===mergeKey && !i.note);
-  if(existing){ existing.qty += qty; }
-  else{
-    state.cart.push({
-      cartId: uid(),
-      mergeKey, id: pid,
-      sku: p.sku, name: p.name,
-      price: p.price, unit: p.unit,
-      image: (p.images&&p.images[0])||"",
-      qty, color, finish, design,
-      orderable: p.orderable, inquiryOnly: p.inquiryOnly
-    });
-  }
+  if(existing) existing.qty += qty;
+  else state.cart.push({
+    cartId:uid(), mergeKey,
+    id:pid, sku:p.sku, name:p.name,
+    price:p.price, unit:p.unit, qty,
+    image:(p.images&&p.images[0])||"",
+    color, finish, design,
+    orderable:p.orderable, inquiryOnly:p.inquiryOnly
+  });
+
   renderCart();
 }
-
-function changeQty(cartId,qty){ const it=state.cart.find(c=>c.cartId===cartId); if(it){it.qty=Math.max(1,qty||1); renderCart();} }
+function changeQty(cartId,qty){ const it=state.cart.find(c=>c.cartId===cartId); if(it){it.qty=Math.max(1,qty||1); renderCart();}}
 function removeItem(cartId){ state.cart=state.cart.filter(c=>c.cartId!==cartId); renderCart(); }
 function clearCart(){ state.cart=[]; renderCart(); }
 
-/* Custom */
+/* Individualzuschnitt */
 function addCustom(){
-  const qty  = Math.max(1, parseInt(el("#custom_qty").value||"1",10));
+  const qty  = Math.max(1, parseInt(el("#custom_qty").value || "1", 10));
   const name = (el("#custom_title").value || "Individualzuschnitt").trim();
   const note = (el("#custom_note").value || "").trim();
   const base = PRODUCTS.find(p=>p.id==="custom-base");
@@ -374,20 +440,17 @@ function addCustom(){
   const price = priceMap[speed] ?? base?.price ?? 0;
 
   state.cart.push({
-    cartId: uid(),
-    mergeKey: `custom-${speed}-${Date.now()}`,
-    id: "custom-base",
-    sku: (base?.sku || "CUST-BASE") + `-${speed}d`,
-    name, price, unit: base?.unit || "Auftrag",
-    image: (base?.images && base.images[0]) || "https://picsum.photos/600/400?blur=2",
-    qty, note, inquiryOnly: true
+    cartId:uid(), mergeKey:`custom-${speed}-${Date.now()}`,
+    id:"custom-base", sku:(base?.sku||"CUST-BASE")+`-${speed}d`,
+    name, price, unit:base?.unit||"Auftrag", qty,
+    image:(base?.images && base.images[0]) || "https://picsum.photos/600/400?blur=2",
+    note, inquiryOnly:true
   });
-
   el("#custom_title").value=""; el("#custom_note").value=""; el("#custom_qty").value=1; el("#custom_speed").value="15";
   renderCart();
 }
 
-/* Cart Render + Payload */
+/* Warenkorb rendern + Payloads */
 function renderCart(){
   el("#cartCount").textContent = `(${state.cart.length})`;
   el("#cartItems").innerHTML = state.cart.map(it=>`
@@ -404,8 +467,7 @@ function renderCart(){
           <button class="ghost" onclick="removeItem('${it.cartId}')">🗑️ Entfernen</button>
         </div>
       </div>
-    </div>
-  `).join("") || `<p class="small muted">Noch keine Artikel.</p>`;
+    </div>`).join("") || `<p class="small muted">Noch keine Artikel.</p>`;
 
   const VAT = 0.20;
   const sumNet = state.cart.reduce((a,it)=>a+it.qty*it.price,0);
@@ -432,7 +494,7 @@ function renderCart(){
     notes:   el("#c_notes")?.value || "",
     items: state.cart.map(({id,sku,name,qty,price,unit,note,color,finish,design})=>({id,sku,name,qty,price,unit,note,color,finish,design})),
     totals:{net:sumNet,vatRate:VAT,gross:sumGross,vatIncluded:vatOn},
-    files:fileMeta, createdAt:new Date().toISOString(), source:"holzwurm-demo"
+    files:fileMeta, createdAt:new Date().toISOString(), source:"holzwurm-website-demo"
   };
   el("#payload").textContent = JSON.stringify(payload,null,2);
 
@@ -452,7 +514,7 @@ function renderCart(){
       },
       items: state.cart.map(({id,sku,name,qty,price,unit,color,finish,design})=>({id,sku,name,qty,price,unit,color,finish,design})),
       totals:{net:sumNet,vatRate:VAT,gross:sumGross,vatIncluded:vatOn},
-      createdAt:new Date().toISOString(), source:"holzwurm-demo"
+      createdAt:new Date().toISOString(), source:"holzwurm-website-demo"
     };
     el("#orderNow").onclick = ()=>{
       if(!orderPayload.customer.name || !orderPayload.customer.email || !orderPayload.customer.address){
@@ -464,15 +526,37 @@ function renderCart(){
   }
 }
 
-/* Init */
+/* Init + UI */
 document.addEventListener("DOMContentLoaded",()=>{
   el("#year").textContent = new Date().getFullYear();
   renderProducts(); renderCart();
-  el("#search").oninput = e=>{ state.query=e.target.value; renderProducts(); };
+
+  el("#search").oninput = e=>{ state.query = e.target.value; renderProducts(); };
   el("#cartBtn").onclick = ()=> el("#cart").classList.add("open");
   el("#closeCart").onclick = ()=> el("#cart").classList.remove("open");
   el("#clear").onclick = clearCart;
   if(el("#vatToggle")) el("#vatToggle").onchange = renderCart;
+
+  // Login modal demo
+  const modal = el("#loginModal");
+  el("#loginBtn").onclick   = ()=> modal.classList.add("open");
+  el("#closeLogin").onclick = ()=> modal.classList.remove("open");
+  el("#doLogin").onclick    = ()=>{
+    const email = el("#l_email").value.trim();
+    const pass  = el("#l_pass").value.trim();
+    if(!email || !pass){ alert("Bitte E-Mail und Passwort eingeben."); return; }
+    alert("Demo-Login erfolgreich (ohne Backend).");
+    modal.classList.remove("open");
+  };
+
+  // Smooth scroll
+  document.querySelectorAll('a[href^="#"]').forEach(a=>{
+    a.addEventListener("click",e=>{
+      const id = a.getAttribute("href");
+      const tgt = document.querySelector(id);
+      if(tgt){ e.preventDefault(); tgt.scrollIntoView({behavior:"smooth",block:"start"}); }
+    });
+  });
 
   el("#send").onclick = ()=>{
     const name = el("#c_name").value.trim(), email = el("#c_email").value.trim();
