@@ -6,9 +6,7 @@
 <title>Holzwurm – Dummy Shop</title>
 <style>
   :root{
-    --brand:#0b3d2e;      /* Tannengrün */
-    --brand-weak:#e6f2ee; /* helles Grün */
-    --bg:#fffaf2; --fg:#1f2937; --muted:#6b7280; --border:#e5e7eb;
+    --brand:#0b3d2e; --brand-weak:#e6f2ee; --bg:#fffaf2; --fg:#1f2937; --muted:#6b7280; --border:#e5e7eb;
   }
   *{box-sizing:border-box}
   body{margin:0;background:linear-gradient(#fff5e6,#f8fafc);font-family:system-ui,Segoe UI,Inter,Arial,sans-serif;color:var(--fg)}
@@ -29,9 +27,7 @@
   .cart{position:fixed;right:16px;top:70px;width:380px;max-width:calc(100% - 32px);background:#fff;border:1px solid var(--border);border-radius:18px;padding:14px;box-shadow:0 10px 30px rgba(0,0,0,.12);display:none;max-height:85vh;overflow:auto}
   .cart.open{display:block}
   footer{border-top:1px solid var(--border);margin-top:36px;padding:16px 0;font-size:12px;color:var(--muted)}
-  @media (max-width:720px){
-    .cart{width:100%;right:0;top:64px;border-radius:0;border-left:none;border-right:none}
-  }
+  @media (max-width:720px){ .cart{width:100%;right:0;top:64px;border-radius:0;border-left:none;border-right:none} }
 </style>
 </head>
 <body>
@@ -189,7 +185,7 @@
 </main>
 
 <script>
-/* === PRODUKTE (Netto-Preise GJ 2022) === */
+/* ===== Produktdaten (GJ 2022 Preise) + Fotos aus ./img/ ===== */
 const PRODUCTS = [
   {
     id: "kom2",
@@ -198,9 +194,7 @@ const PRODUCTS = [
     price: 181.00, unit: "Stk",
     orderable: true,
     images: [
-      "https://images.unsplash.com/photo-1600585154526-990dced4db0d?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1524758631624-e2822e304c36?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1616594039964-ae9021c8e468?q=80&w=1200&auto=format&fit=crop"
+      "img/Kommode 2 teillig ikea.avif"
     ],
     description: "Zweiteilige Standard-Kommode: Korpus Spanplatte, Fronten lackiert, Metallgriffe."
   },
@@ -211,9 +205,7 @@ const PRODUCTS = [
     price: 242.00, unit: "Stk",
     orderable: true,
     images: [
-      "https://images.unsplash.com/photo-1554995207-cd9034b1aaea?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1505691723518-36a5ac3b2c47?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1600585154526-990dced4db0d?q=80&w=1200&auto=format&fit=crop"
+      "img/Kommode 3 teillig ikea.avif"
     ],
     description: "Dreiteilige Kommode, push-to-open, höhenverstellbare Füße, Kanten ABS 2 mm."
   },
@@ -224,9 +216,8 @@ const PRODUCTS = [
     price: 303.00, unit: "Stk",
     orderable: true,
     images: [
-      "https://images.unsplash.com/photo-1615529182904-14819c35db37?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1505691938895-1758d7feb511?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1582582429416-aba2e7f7e0a0?q=80&w=1200&auto=format&fit=crop"
+      "img/Kommode 4 teillig ikea.avif",
+      "img/Kommode 4 teilig weiß ikea 2.avif"
     ],
     description: "Vierteilige Kommode mit Vollauszügen (30 kg), Oberfläche HPL robust."
   },
@@ -237,9 +228,8 @@ const PRODUCTS = [
     price: 405.00, unit: "Stk",
     orderable: true,
     images: [
-      "https://images.unsplash.com/photo-1616594039964-ae9021c8e468?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1598300183928-3c5c61b66c9e?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1505691723518-36a5ac3b2c47?q=80&w=1200&auto=format&fit=crop"
+      "img/schrank klein ikea.avif",
+      "img/schrank klein ikea 2.avif"
     ],
     description: "Kleiderschrank 2-türig, Fachböden verstellbar, Stange Alu, Softclose."
   },
@@ -250,9 +240,8 @@ const PRODUCTS = [
     price: 458.00, unit: "Stk",
     orderable: true,
     images: [
-      "https://images.unsplash.com/photo-1554995207-c18c203602cb?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1554995207-cd9034b1aaea?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1505691938895-1758d7feb511?q=80&w=1200&auto=format&fit=crop"
+      "img/Schrank groß ikea 2.avif",
+      "img/Schrank groß ikea weiß.avif"
     ],
     description: "Großer Schrank mit 3 Fachböden und 2 Schubladen, Korpus Dekor Eiche."
   },
@@ -269,23 +258,38 @@ const PRODUCTS = [
   }
 ];
 
+/* Globale Variantenvorgaben */
+const COLORS = ["weiß","grau","braun","schwarz"];
+const FINISHES = ["glatt","matt"];
+
 const fmt = n=> new Intl.NumberFormat("de-AT",{style:"currency",currency:"EUR"}).format(n);
 const state = { cart: [], query: "" };
 const el = s => document.querySelector(s);
+const uid = () => Math.random().toString(36).slice(2)+Date.now().toString(36);
 
-/* Produkte rendern (mit Mini-Galerie) */
+/* Produkte rendern: inkl. Galerie + Variantenauswahl je Karte */
 function renderProducts(){
   const q = state.query.toLowerCase();
   el("#products").innerHTML = PRODUCTS
     .filter(p => (p.name+p.sku+(p.tags||[]).join(" ")).toLowerCase().includes(q))
     .map(p => {
       const imgs = p.images && p.images.length ? p.images : ["https://picsum.photos/800/500"];
+      const colorSel = `
+        <label class="small muted" style="display:block;margin-top:6px">Korpusfarbe</label>
+        <select id="opt-color-${p.id}" style="width:100%">
+          ${COLORS.map(c=>`<option value="${c}">${c}</option>`).join("")}
+        </select>`;
+      const finishSel = `
+        <label class="small muted" style="display:block;margin-top:6px">Oberfläche</label>
+        <select id="opt-finish-${p.id}" style="width:100%">
+          ${FINISHES.map(f=>`<option value="${f}">${f}</option>`).join("")}
+        </select>`;
       return `
       <div class="card">
         <img class="main" src="${imgs[0]}" alt="${p.name}" data-main="${p.id}" />
         <div class="pad">
           <div class="row" style="justify-content:space-between;align-items:flex-start">
-            <div><b>${p.name}</b>${(p.tags||[]).map(t=>`<span class="badge">${t}</span>`).join("")}</div>
+            <div><b>${p.name}</b></div>
             <div class="small muted" title="Artikelnummer">${p.sku}</div>
           </div>
           <p class="small muted" style="margin:6px 0 8px">${p.description || ""}</p>
@@ -295,7 +299,9 @@ function renderProducts(){
               ${imgs.map(u=>`<img class="thumb" src="${u}" alt="thumb" onclick="swapImage('${p.id}','${u}')">`).join("")}
             </div>` : ""}
 
-          <div class="row" style="justify-content:space-between">
+          ${colorSel}${finishSel}
+
+          <div class="row" style="justify-content:space-between;margin-top:8px">
             <div class="small"><span class="muted">Preis</span> <b>${fmt(p.price)}</b> / ${p.unit}</div>
             <button onclick="add('${p.id}')">🛒 In den Warenkorb</button>
           </div>
@@ -307,20 +313,42 @@ function renderProducts(){
     }).join("");
 }
 function swapImage(pid,url){
-  const img = document.querySelector(`img[data-main="${pid}"]`);
-  if(img) img.src = url;
+  const img = document.querySelector(`img[data-main="${pid}"]`); if(img) img.src = url;
 }
 
-/* Warenkorb-Operationen */
-function add(id){
-  const p = PRODUCTS.find(x=>x.id===id);
-  const f = state.cart.find(c=>c.id===id && !c.note); // Standardartikel zusammenfassen
-  if(f) f.qty+=1;
-  else state.cart.push({...p, qty:1, image: (p.images&&p.images[0]) || ""});
+/* Warenkorb-Operationen (mit Varianten-Zusammenfassung) */
+function add(productId){
+  const p = PRODUCTS.find(x=>x.id===productId);
+  const color = el(`#opt-color-${productId}`)?.value || "weiß";
+  const finish = el(`#opt-finish-${productId}`)?.value || "glatt";
+  const mergeKey = `${productId}__${color}__${finish}__std`;
+
+  const found = state.cart.find(i => i.mergeKey===mergeKey && !i.note);
+  if(found){ found.qty += 1; }
+  else{
+    state.cart.push({
+      cartId: uid(),
+      mergeKey,
+      id: productId,
+      sku: p.sku,
+      name: p.name,
+      price: p.price,
+      unit: p.unit,
+      image: (p.images&&p.images[0])||"",
+      qty: 1,
+      color, finish,
+      orderable: p.orderable,
+      inquiryOnly: p.inquiryOnly
+    });
+  }
   renderCart();
 }
-function changeQty(id,qty){ const it = state.cart.find(c=>c.id===id); if(it){ it.qty = Math.max(1, qty||1); renderCart(); } }
-function removeItem(id){ state.cart = state.cart.filter(c=>c.id!==id); renderCart(); }
+
+function changeQty(cartId,qty){
+  const it = state.cart.find(c=>c.cartId===cartId);
+  if(it){ it.qty = Math.max(1, qty||1); renderCart(); }
+}
+function removeItem(cartId){ state.cart = state.cart.filter(c=>c.cartId!==cartId); renderCart(); }
 function clearCart(){ state.cart = []; renderCart(); }
 
 /* Individualzuschnitt hinzufügen (mit Lieferzeit-Preis) */
@@ -335,9 +363,10 @@ function addCustom(){
   const priceMap = { "8": 1467.90, "15": 1425.96, "20": 1370.04 };
   const price = priceMap[speed] ?? base.price;
 
-  const id = "custom-" + Date.now();
   state.cart.push({
-    id,
+    cartId: uid(),
+    mergeKey: `custom__${speed}`, // keine Zusammenfassung – individuelle Position
+    id: "custom-base",
     sku: base.sku + `-${speed}d`,
     name: name || base.name,
     price,
@@ -347,9 +376,7 @@ function addCustom(){
     inquiryOnly: true
   });
 
-  el("#custom_title").value = "";
-  el("#custom_note").value  = "";
-  el("#custom_qty").value   = 1;
+  el("#custom_title").value = ""; el("#custom_note").value  = ""; el("#custom_qty").value   = 1;
   if(el("#custom_speed")) el("#custom_speed").value = "15";
 
   renderCart();
@@ -364,11 +391,12 @@ function renderCart(){
       <div style="flex:1">
         <div><b>${it.name}</b></div>
         <div class="small muted">${it.sku||""}</div>
+        ${it.color ? `<div class="small">Korpus: ${it.color}, Oberfläche: ${it.finish||"-"}</div>` : ""}
         ${it.note ? `<div class="small" style="margin-top:4px"><b>Notiz:</b> ${it.note}</div>` : ""}
         <div class="small">${fmt(it.price)} / ${it.unit}</div>
         <div class="row" style="gap:6px;margin-top:6px">
-          <input type="number" min="1" value="${it.qty}" style="width:70px" onchange="changeQty('${it.id}', this.value)">
-          <button class="ghost" onclick="removeItem('${it.id}')">🗑️ Entfernen</button>
+          <input type="number" min="1" value="${it.qty}" style="width:70px" onchange="changeQty('${it.cartId}', this.value)">
+          <button class="ghost" onclick="removeItem('${it.cartId}')">🗑️ Entfernen</button>
         </div>
       </div>
     </div>`).join("") || '<div class="muted small" style="padding:8px 0">Noch keine Artikel.</div>';
@@ -396,7 +424,7 @@ function renderCart(){
     delivery: el("#c_delivery")?.value || "Abholung",
     requestedDate: el("#c_date")?.value || "",
     notes:   el("#c_notes")?.value || "",
-    items: state.cart.map(({id,sku,name,qty,price,unit,note})=>({id,sku,name,qty,price,unit,note})),
+    items: state.cart.map(({id,sku,name,qty,price,unit,note,color,finish})=>({id,sku,name,qty,price,unit,note,color,finish})),
     totals: { net: sumNet, vatRate: VAT_RATE, gross: sumGross, vatIncluded: vatOn },
     files: fileMeta,
     createdAt: new Date().toISOString(),
@@ -404,13 +432,12 @@ function renderCart(){
   };
   el("#payload").textContent = JSON.stringify(payload,null,2);
 
-  /* Bestellkarte nur zeigen, wenn alle Positionen bestellbar sind (keine inquiryOnly) */
+  /* Bestellkarte nur zeigen, wenn alle Positionen bestellbar (keine inquiryOnly) */
   const hasItems = state.cart.length>0;
   const allOrderable = hasItems && state.cart.every(i => i.inquiryOnly ? false : (i.orderable ?? true));
   const orderCard = el("#orderCard");
   if(orderCard) orderCard.style.display = allOrderable ? "block" : "none";
 
-  /* Order-Button binden */
   if(allOrderable){
     const orderPayload = {
       type: "order",
@@ -421,8 +448,8 @@ function renderCart(){
         shipping: el("#o_shipping")?.value || "Abholung",
         payment: el("#o_payment")?.value || "Rechnung"
       },
-      items: state.cart.map(({id,sku,name,qty,price,unit})=>({id,sku,name,qty,price,unit})),
-      totals: { net: sumNet, vatRate: VAT_RATE, gross: sumGross, vatIncluded: vatOn },
+      items: state.cart.map(({id,sku,name,qty,price,unit,color,finish})=>({id,sku,name,qty,price,unit,color,finish})),
+      totals: { net: sumNet, vatRate: 0.20, gross: sumGross, vatIncluded: vatOn },
       createdAt: new Date().toISOString(),
       source: "holzwurm-dummy-shop-html"
     };
@@ -430,8 +457,7 @@ function renderCart(){
     if(orderBtn){
       orderBtn.onclick = ()=>{
         if(!orderPayload.customer.name || !orderPayload.customer.email || !orderPayload.customer.address){
-          alert("Bitte Name, E-Mail und Lieferadresse angeben.");
-          return;
+          alert("Bitte Name, E-Mail und Lieferadresse angeben."); return;
         }
         console.log("DEMO: Bestellung", orderPayload);
         alert("Danke! Bestellung (Demo) erzeugt. Siehe Konsole.");
@@ -459,8 +485,7 @@ document.addEventListener("DOMContentLoaded",()=>{
       console.log("DEMO: Angebotsanfrage", payload);
       el("#hint").style.display = "block";
       alert("Danke! Ihre Anfrage wurde (in der Demo) erzeugt. Siehe Konsole/JSON.");
-      // Echte Mail? Hier z. B. Formspree:
-      // await fetch("https://formspree.io/f/DEINE_ID",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+      // Echte Mail? Z. B. Formspree/EmailJS hier integrieren.
     }catch(e){ console.error(e); alert("Fehler beim Erzeugen der Anfrage."); }
   };
 
