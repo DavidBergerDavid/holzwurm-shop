@@ -230,7 +230,7 @@ footer .container{display:flex;justify-content:space-between;align-items:center;
           <span class="small muted">Skizzen (PDF/DXF/JPG) später im Formular hochladen.</span>
         </div>
         <div class="row" style="gap:10px;margin-top:10px">
-          <button class="btn-outline" onclick="addCustom()">➕ In Warenkorb</button>
+          <button id="btnCustomAdd" class="btn-outline">➕ In Warenkorb</button>
         </div>
       </div>
     </article>
@@ -532,7 +532,7 @@ const state = { cart:[], query:"" };
 /* Produkte rendern */
 function renderProducts(){
   const q = state.query.toLowerCase();
-  el("#products").innerHTML = PRODUCTS
+  const html = PRODUCTS
     .filter(p => (p.name+p.sku).toLowerCase().includes(q))
     .map(p=>{
       const imgs = p.images?.length ? p.images : ["https://picsum.photos/1200/800?blur=3"];
@@ -543,7 +543,7 @@ function renderProducts(){
         <div class="pad">
           <div class="line"><b>${p.name}</b><span class="muted small">${p.sku}</span></div>
           <p class="muted small" style="margin:8px 0">${p.description||""}</p>
-          ${imgs.length>1?`<div class="thumbbar">${imgs.map(u=>`<img class="thumb" src="${u}" alt="" onclick="swapImage('${pid}','${u}')">`).join("")}</div>`:""}
+          ${imgs.length>1?`<div class="thumbbar">${imgs.map(u=>`<img class="thumb" src="${u}" alt="" data-thumb="${pid}" data-src="${u}">`).join("")}</div>`:""}
 
           <div class="row" style="gap:10px;margin-top:10px">
             <div style="flex:1">
@@ -563,34 +563,68 @@ function renderProducts(){
           <div style="margin-top:10px">
             <div class="small muted" style="margin-bottom:6px">Frontdesign</div>
             <div class="palette" id="pal-${pid}">
-              ${FRONT_PALETTE.map((c,i)=>`<div class="swatch ${i===0?'active':''}" title="${c.name}" style="background:${c.hex}" onclick="pickSwatch('${pid}',${i})"></div>`).join("")}
+              ${FRONT_PALETTE.map((c,i)=>`<div class="swatch ${i===0?'active':''}" title="${c.name}" style="background:${c.hex}" data-swatch="${pid}" data-idx="${i}"></div>`).join("")}
             </div>
             <input type="hidden" id="design-${pid}" value="${FRONT_PALETTE[0].name}">
           </div>
 
           <div class="line" style="margin-top:12px">
             <div class="small"><span class="muted">Preis</span> <b>${fmt(p.price)}</b> / ${p.unit}</div>
-            <button class="btn" onclick="add('${pid}')">🛒 In den Warenkorb</button>
+            <button class="btn btn-add" data-id="${pid}">🛒 In den Warenkorb</button>
           </div>
           <div class="small muted" style="margin-top:6px">${p.orderable? "Direkt bestellbar":"Nur Anfrage (Individual)"}</div>
         </div>
       </article>`;
     }).join("");
+
+  el("#products").innerHTML = html;
+
+  /* Events nach dem Rendern binden */
+  // Add-to-cart
+  document.querySelectorAll(".btn-add").forEach(btn=>{
+    btn.addEventListener("click",()=>add(btn.dataset.id));
+  });
+  // Thumbnails
+  document.querySelectorAll("[data-thumb]").forEach(img=>{
+    img.addEventListener("click",()=>{
+      const pid = img.dataset.thumb;
+      const main = document.querySelector(`img[data-main="${pid}"]`);
+      if(main) main.src = img.dataset.src;
+    });
+  });
+  // Swatches
+  document.querySelectorAll("[data-swatch]").forEach(sw=>{
+    sw.addEventListener("click",()=>{
+      const pid = sw.dataset.swatch;
+      const idx = parseInt(sw.dataset.idx,10);
+      pickSwatch(pid,idx);
+    });
+  });
 }
-function swapImage(pid,url){ const img=document.querySelector(`img[data-main="${pid}"]`); if(img) img.src=url; }
+
 function pickSwatch(pid,idx){
   const pal = document.getElementById(`pal-${pid}`);
+  if(!pal) return;
   pal.querySelectorAll(".swatch").forEach((s,i)=>s.classList.toggle("active",i===idx));
-  document.getElementById(`design-${pid}`).value = FRONT_PALETTE[idx].name;
+  const designInput = document.getElementById(`design-${pid}`);
+  if(designInput) designInput.value = FRONT_PALETTE[idx].name;
 }
 
 /* Warenkorb */
 function add(pid){
   const p = PRODUCTS.find(x=>x.id===pid);
-  const qty = Math.max(1, parseInt(el(`#qty-${pid}`)?.value||"1",10));
-  const color  = el(`#opt-color-${pid}`)?.querySelector('select').value || "weiß";
-  const finish = el(`#opt-finish-${pid}`)?.querySelector('select').value || "glatt";
-  const design = el(`#design-${pid}`)?.value || FRONT_PALETTE[0].name;
+  if(!p) return;
+  const qtyInput = el(`#qty-${pid}`);
+  const qty = Math.max(1, parseInt(qtyInput ? qtyInput.value : "1",10));
+
+  const colorSel  = el(`#opt-color-${pid}`);
+  const finishSel = el(`#opt-finish-${pid}`);
+  const color  = colorSel  ? colorSel.value  : "weiß";
+  const finish = finishSel ? finishSel.value : "glatt";
+
+  const designInput = el(`#design-${pid}`);
+  const design = designInput ? designInput.value : FRONT_PALETTE[0].name;
+
   const mergeKey = `${pid}__${color}__${finish}__${design}`;
 
   const existing = state.cart.find(i=>i.mergeKey===mergeKey && !i.note);
@@ -605,15 +639,23 @@ function add(pid){
   });
   renderCart();
 }
-function changeQty(cartId,qty){ const it=state.cart.find(c=>c.cartId===cartId); if(it){it.qty=Math.max(1,qty||1); renderCart();}}
+
+function changeQty(cartId,qty){
+  const it=state.cart.find(c=>c.cartId===cartId);
+  if(it){
+    it.qty=Math.max(1,qty||1);
+    renderCart();
+  }
+}
 function removeItem(cartId){ state.cart=state.cart.filter(c=>c.cartId!==cartId); renderCart(); }
 function clearCart(){ state.cart=[]; renderCart(); }
 
 /* Individualzuschnitt */
 function addCustom(){
-  const qty  = Math.max(1, parseInt(el("#custom_qty").value || "1", 10));
-  const name = (el("#custom_title").value || "Individualzuschnitt").trim();
-  const note = (el("#custom_note").value || "").trim();
+  const qtyInput = el("#custom_qty");
+  const qty  = Math.max(1, parseInt(qtyInput ? qtyInput.value : "1", 10));
+  const name = (el("#custom_title")?.value || "Individualzuschnitt").trim();
+  const note = (el("#custom_note")?.value || "").trim();
   const base = PRODUCTS.find(p=>p.id==="custom-base");
   const speed = (el("#custom_speed")?.value || "15");
   const priceMap = {"8":1467.90,"15":1425.96,"20":1370.04};
@@ -626,7 +668,12 @@ function addCustom(){
     image:(base?.images && base.images[0]) || "https://picsum.photos/600/400?blur=2",
     note, inquiryOnly:true
   });
-  el("#custom_title").value=""; el("#custom_note").value=""; el("#custom_qty").value=1; el("#custom_speed").value="15";
+
+  if(qtyInput) qtyInput.value = 1;
+  if(el("#custom_title")) el("#custom_title").value="";
+  if(el("#custom_note"))  el("#custom_note").value="";
+  if(el("#custom_speed")) el("#custom_speed").value="15";
+
   renderCart();
 }
 
@@ -658,7 +705,11 @@ function renderCart(){
   el("#totalNet").textContent = fmt(sumNet);
   el("#totalGross").textContent = fmt(sumGross);
 
-  el("#download").setAttribute("href","data:application/json;charset=utf-8,"+encodeURIComponent(JSON.stringify(state.cart,null,2)));
+  el("#download").setAttribute(
+    "href",
+    "data:application/json;charset=utf-8,"+
+    encodeURIComponent(JSON.stringify(state.cart,null,2))
+  );
 
   const filesInput = el("#c_files");
   const files = filesInput && filesInput.files ? Array.from(filesInput.files) : [];
@@ -710,13 +761,18 @@ function renderCart(){
 /* Init / UI */
 document.addEventListener("DOMContentLoaded",()=>{
   el("#year").textContent = new Date().getFullYear();
-  renderProducts(); renderCart();
+  renderProducts();
+  renderCart();
 
   el("#search").oninput = e=>{ state.query=e.target.value; renderProducts(); };
   el("#cartBtn").onclick = ()=> el("#cart").classList.add("open");
   el("#closeCart").onclick = ()=> el("#cart").classList.remove("open");
   el("#clear").onclick = clearCart;
   if(el("#vatToggle")) el("#vatToggle").onchange = renderCart;
+
+  // Individualzuschnitt-Button
+  const customBtn = el("#btnCustomAdd");
+  if(customBtn) customBtn.onclick = addCustom;
 
   // Login
   const modal = el("#loginModal");
