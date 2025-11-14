@@ -68,7 +68,7 @@ button{border:1px solid transparent;border-radius:12px;padding:10px 14px;font-we
 }
 .select select:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 4px var(--ring)}
 
-/* ===== Hero (neues Werbefoto) ===== */
+/* ===== Hero (Werbefoto bleibt) ===== */
 .hero{
   position:relative; isolation:isolate;
   background:
@@ -164,6 +164,7 @@ footer .container{display:flex;justify-content:space-between;align-items:center;
     <nav class="main">
       <a href="#leistungen">Leistungen</a>
       <a href="#shop">Produkte/Shop</a>
+      <a href="#zero">Zero Waste</a>
       <a href="#team">Optimierungsteam</a>
       <a href="#bewertungen">Bewertungen</a>
       <a href="#unternehmen">Über uns</a>
@@ -235,7 +236,37 @@ footer .container{display:flex;justify-content:space-between;align-items:center;
   </div>
 </section>
 
-<!-- Optimierungsteam (unverändert) -->
+<!-- ZERO WASTE -->
+<section id="zero" class="section">
+  <div class="container">
+    <h2>Zero Waste</h2>
+    <div class="grid" style="margin-top:12px">
+      <div class="col-6 card">
+        <img class="heroimg" src="Holzspäne.jpg" alt="Holzspäne / Anzünder">
+        <div class="pad">
+          <h3>Holzspäne – Anzündhilfe & Brennmaterial</h3>
+          <p class="muted small">
+            Bei der Fertigung fallen saubere, unbehandelte Holzspäne an. Ideal als Anzünder für Ofen oder Grill –
+            regional, trocken und naturbelassen. Abholung im Studio, auf Wunsch im Papiersack verpackt.
+          </p>
+        </div>
+      </div>
+      <div class="col-6 card">
+        <img class="heroimg" src="verschnitt.jpg" alt="Verschnitt & B-Ware">
+        <div class="pad">
+          <h3>Verschnitt & B-Ware – Ressourcen sinnvoll nutzen</h3>
+          <p class="muted small">
+            Reststücke, Musterteile oder B-Ware bekommen bei uns eine zweite Chance. Perfekt für DIY-Projekte,
+            Werkstattregale oder Upcycling. Unsere <b>Zero-Waste-Philosophie</b>: Materialien so lange wie möglich
+            im Kreislauf halten – ökologisch und wirtschaftlich sinnvoll.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Optimierungsteam -->
 <section id="team" class="section">
   <div class="container">
     <h2>Optimierungsteam</h2>
@@ -290,7 +321,7 @@ footer .container{display:flex;justify-content:space-between;align-items:center;
   </div>
 </section>
 
-<!-- Bewertungen statt Projekte -->
+<!-- Bewertungen -->
 <section id="bewertungen" class="section">
   <div class="container">
     <h2>Kundenbewertungen</h2>
@@ -314,7 +345,7 @@ footer .container{display:flex;justify-content:space-between;align-items:center;
   </div>
 </section>
 
-<!-- Unternehmen – 2 Karten NEBENEINANDER -->
+<!-- Über uns -->
 <section id="unternehmen" class="section">
   <div class="container">
     <h2>Über uns</h2>
@@ -538,10 +569,10 @@ function pickSwatch(pid,idx){
 /* Warenkorb */
 function add(pid){
   const p = PRODUCTS.find(x=>x.id===pid);
-  const qty = Math.max(1, parseInt(el(`#qty-${pid}`)?.value||"1",10));
-  const color  = el(`#opt-color-${pid}`)?.querySelector('select').value || "weiß";
-  const finish = el(`#opt-finish-${pid}`)?.querySelector('select').value || "glatt";
-  const design = el(`#design-${pid}`)?.value || FRONT_PALETTE[0].name;
+  const qty = Math.max(1, parseInt((document.getElementById(`qty-${pid}`)?.value)||"1",10));
+  const color  = (document.getElementById(`opt-color-${pid}`)?.value)  || "weiß";
+  const finish = (document.getElementById(`opt-finish-${pid}`)?.value) || "glatt";
+  const design = (document.getElementById(`design-${pid}`)?.value)     || FRONT_PALETTE[0].name;
   const mergeKey = `${pid}__${color}__${finish}__${design}`;
 
   const existing = state.cart.find(i=>i.mergeKey===mergeKey && !i.note);
@@ -620,7 +651,7 @@ function renderCart(){
     email:   el("#c_email")?.value || "",
     phone:   el("#c_phone")?.value || "",
     address: el("#c_addr")?.value || "",
-    delivery: el("#c_delivery")?.querySelector('select')?.value || "Abholung",
+    delivery: el("#c_delivery")?.value || "Abholung",
     requestedDate: el("#c_date")?.value || "",
     notes:   el("#c_notes")?.value || "",
     items: state.cart.map(({id,sku,name,qty,price,unit,note,color,finish,design})=>({id,sku,name,qty,price,unit,note,color,finish,design})),
@@ -640,8 +671,8 @@ function renderCart(){
         name:el("#o_name")?.value||"",
         email:el("#o_email")?.value||"",
         address:el("#o_addr")?.value||"",
-        shipping:el("#o_shipping")?.querySelector('select')?.value||"Abholung",
-        payment:el("#o_payment")?.querySelector('select')?.value||"Rechnung",
+        shipping:el("#o_shipping")?.value||"Abholung",
+        payment:el("#o_payment")?.value||"Rechnung",
       },
       items: state.cart.map(({id,sku,name,qty,price,unit,color,finish,design})=>({id,sku,name,qty,price,unit,color,finish,design})),
       totals:{net:sumNet,vatRate:VAT,gross:sumGross,vatIncluded:vatOn},
@@ -650,7 +681,7 @@ function renderCart(){
     el("#orderNow").onclick = ()=>{
       if(!orderPayload.customer.name || !orderPayload.customer.email || !orderPayload.customer.address){
         alert("Bitte Name, E-Mail und Lieferadresse angeben."); return;
-      }
+        }
       console.log("DEMO – Bestellung:", orderPayload);
       alert("Danke! Bestellung (Demo) erzeugt. Siehe Konsole.");
     };
@@ -700,6 +731,9 @@ document.addEventListener("DOMContentLoaded",()=>{
     }catch(err){ console.error(err); alert("Fehler beim Erzeugen der Anfrage."); }
   };
 });
+
+/* >>> damit Inline-Handler funktionieren: Funktionen global machen <<< */
+Object.assign(window,{ add, addCustom, swapImage, pickSwatch, changeQty, removeItem });
 </script>
 </body>
 </html>
